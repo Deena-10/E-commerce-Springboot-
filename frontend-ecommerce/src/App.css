@@ -1,0 +1,80 @@
+.Card {
+  width: 220px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  padding: 10px;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin: 16px;
+}
+
+.Card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.ProductImage {
+  width: 100%;
+  height: 160px;
+  object-fit: contain;
+  border-radius: 12px;
+}
+
+.productname {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 10px 0 6px;
+  color: #333;
+}
+
+.desc {
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 6px;
+}
+
+.rating span {
+  font-size: 1.2rem;
+  margin: 0 1px;
+}
+
+.price {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #1a73e8;
+  margin: 8px 0;
+}
+
+.stock {
+  font-size: 0.85rem;
+  color: #444;
+  margin-bottom: 6px;
+}
+
+.addtocart {
+  background-color: #000000;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  font-size: 0.95rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.addtocart:hover {
+  background-color: #ededed;
+  color: #000;
+}
+
+.delivery {
+  font-size: 0.85rem;
+  color: green;
+  margin-top: 6px;
+}
+.container{
+  display: grid;
+  grid-template-columns: repeat(auto-fill,minmax(220px,1fr)) ;
+}
