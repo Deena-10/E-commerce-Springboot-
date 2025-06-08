@@ -7,6 +7,12 @@
   margin: 0 auto;
   background-color: #f9f9f9;
 }
+.logo-img {
+  height: 60px;          /* Adjust size as needed */
+  vertical-align: middle;
+  margin-right: 8px;     /* Space between image and text */
+}
+
 
 /* Product Card */
 .Card {

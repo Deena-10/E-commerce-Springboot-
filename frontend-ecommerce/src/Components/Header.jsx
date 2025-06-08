@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Header.css';
+import logo from '../img/bytenest.png';  // Import the logo image
 
 const Header = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -27,7 +28,10 @@ const Header = () => {
 
   return (
     <header className="header">
-      <h1 className="logo">🛒 ByteNest Gadgets</h1>
+      <h1 className="logo">
+        <img src={logo} alt="ByteNest Gadgets Logo" className="logo-img" />
+        ByteNest Gadgets
+      </h1>
 
       {/* Search Bar */}
       <form onSubmit={handleSearch} className="search-form">
