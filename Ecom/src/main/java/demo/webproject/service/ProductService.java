@@ -34,7 +34,6 @@ public class ProductService {
         product.setRating(productDetails.getRating());
         product.setStock(productDetails.getStock());
         product.setPrice(productDetails.getPrice());
-
         return repository.save(product);
     }
 
@@ -49,5 +48,20 @@ public class ProductService {
     public Product getProductById(Long id) {
         return repository.findById(id)
             .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
+    }
+
+    // New method to decrease stock when an order is placed
+    public Product decreaseStock(Long productId, int quantity) {
+        Optional<Product> existing = repository.findById(productId);
+        if (existing.isEmpty()) return null;
+
+        Product product = existing.get();
+        int newStock = product.getStock() - quantity;
+        if (newStock < 0) {
+            newStock = 0; // prevent negative stock
+        }
+        product.setStock(newStock);
+
+        return repository.save(product);
     }
 }

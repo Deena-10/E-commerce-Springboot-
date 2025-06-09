@@ -3,22 +3,14 @@ package demo.webproject.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import demo.webproject.Entity.Product;
 import demo.webproject.service.ProductService;
 
 @RestController
 @RequestMapping("/api/products")
-@CrossOrigin(origins = "*") // Allow API access from frontend (if using React)
+@CrossOrigin(origins = "*")
 public class ProductController {
 
     private final ProductService service;
@@ -53,5 +45,15 @@ public class ProductController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok("Product deleted successfully");
+    }
+
+    // Endpoint to decrease stock by quantity
+    @PutMapping("/{id}/stock")
+    public ResponseEntity<Product> updateStock(@PathVariable Long id, @RequestParam int quantity) {
+        Product updatedProduct = service.decreaseStock(id, quantity);
+        if (updatedProduct == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(updatedProduct);
     }
 }

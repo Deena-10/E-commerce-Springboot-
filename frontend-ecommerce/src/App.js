@@ -4,11 +4,12 @@ import './App.css';
 import Header from './Components/Header';
 import { ErrorBoundary } from './Components/ErrorBoundary';
 import ProductCard from './Components/ProductCard';
-import { getproducts } from './Api/ProductsApi';
-import { Routes, Route } from 'react-router-dom';  // Make sure BrowserRouter wraps this in index.js or parent
+import { getproducts } from './Api/ProductsApi';  // ensure this function is exported correctly
+import { Routes, Route } from 'react-router-dom';
 import CartPage from './Pages/CartPage';
 import CheckoutPage from './Pages/CheckoutPage';
 import Profile from './Pages/Profile';
+
 function HomePage({ products, loading }) {
   return (
     <div className="container">
@@ -47,6 +48,8 @@ function App() {
       <Header />
       
       <Routes>
+        <Route path="/profile" element={<Profile />} />
+
         <Route path="/" element={<HomePage products={products} loading={loading} />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/checkout" element={<CheckoutPage />} />

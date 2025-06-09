@@ -1,6 +1,9 @@
+// src/pages/CheckoutPage.jsx
 import React, { useState } from 'react';
 import './CheckoutPage.css';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { updateProductStock } from '../Api/ProductsApi';
+import { placeOrder } from '../Api/OrderApi';
 
 function CheckoutPage() {
   const location = useLocation();
@@ -22,9 +25,27 @@ function CheckoutPage() {
     setQuantity(parseInt(e.target.value));
   };
 
-  const handlePlaceOrder = () => {
-    alert(`Order placed successfully!\nProduct: ${product.name}\nQuantity: ${quantity}`);
-    navigate('/'); // redirect to home or success page
+  const handlePlaceOrder = async () => {
+    try {
+      // 1. Place the order
+      const orderItem = {
+        productId: product.id,
+        quantity,
+        price: product.price,
+        productName: product.name,
+      };
+      await placeOrder([orderItem]);
+
+      // 2. Calculate new stock and update product stock
+      const newStock = product.stock - quantity;
+      await updateProductStock(product.id, newStock);
+
+      alert(`Order placed successfully!\nProduct: ${product.name}\nQuantity: ${quantity}`);
+      navigate('/');
+    } catch (error) {
+      console.error('Order placement failed:', error);
+      alert('Failed to place order. Please try again.');
+    }
   };
 
   const totalPrice = (product.price * quantity).toFixed(2);
