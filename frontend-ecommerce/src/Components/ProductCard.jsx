@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './ProductCard.css'; // Make sure your CSS file is imported
+import './ProductCard.css';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../Context/CartContext';
 
@@ -13,17 +13,22 @@ function ProductCard({ product }) {
   const handleAddToCart = async () => {
     try {
       await addToCart(product);
-
       setShowMessage(true);
-      setTimeout(() => setShowMessage(false), 2500);  // match animation length
+      setTimeout(() => setShowMessage(false), 2500);
     } catch (error) {
       console.error('Add to cart failed:', error);
     }
   };
 
-  const stars = Array(5).fill(0).map((_, i) => (
-    <span key={i} style={{ color: i < rating ? '#f1c40f' : '#ddd' }}>★</span>
-  ));
+  const handleBuyNow = () => {
+    navigate('/checkout', { state: { product } }); // Pass selected product to checkout page
+  };
+
+  const stars = Array(5)
+    .fill(0)
+    .map((_, i) => (
+      <span key={i} style={{ color: i < rating ? '#f1c40f' : '#ddd' }}>★</span>
+    ));
 
   return (
     <div className="Card">
@@ -49,7 +54,7 @@ function ProductCard({ product }) {
 
         <button
           className="buynow"
-          onClick={() => navigate('/checkout')}
+          onClick={handleBuyNow}
           disabled={stock === 0}
         >
           Buy Now

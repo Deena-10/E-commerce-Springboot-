@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Header.css';
-import logo from '../img/bytenest.png';  // Import the logo image
+import logo from '../img/Logo.png';  // Import the logo image
 
 const Header = () => {
   const [searchTerm, setSearchTerm] = useState('');

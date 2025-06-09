@@ -1,0 +1,120 @@
+/* src/Components/CheckoutPage.css */
+
+.checkout-container {
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.checkout-container h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #333;
+}
+.checkout-product {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+}
+
+.checkout-product-img {
+  width: 150px;
+  height: 150px;
+  object-fit: contain;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.checkout-product-details {
+  flex: 1; /* take remaining space */
+  min-width: 250px;
+}
+
+/* Responsive tweak */
+@media (max-width: 600px) {
+  .checkout-product {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .checkout-product-img {
+    width: 120px;
+    height: 120px;
+  }
+
+  .checkout-product-details {
+    min-width: unset;
+    text-align: center;
+  }
+}
+
+.checkout-list {
+  list-style-type: none;
+  padding: 0;
+  margin-bottom: 20px;
+}
+
+.checkout-item {
+  background-color: #f8f9fa;
+  padding: 15px 20px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #444;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.checkout-item span {
+  margin-right: 12px;
+}
+
+h3 {
+  text-align: right;
+  margin: 20px 0;
+  font-size: 1.3rem;
+  color: #111;
+}
+
+.checkout-product-details select {
+  margin-left: 10px;
+  padding: 4px 10px;
+  font-size: 1rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.place-order-btn {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.place-order-btn:hover {
+  background-color: #218838;
+}
+@media (max-width: 600px) {
+  .checkout-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .place-order-btn {
+    font-size: 1rem;
+  }
+}

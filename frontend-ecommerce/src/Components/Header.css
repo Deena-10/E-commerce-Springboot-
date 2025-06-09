@@ -12,7 +12,9 @@
 }
 
 .logo {
-  font-size: 1.8rem;
+  display: flex;
+  align-items: center;
+  font-size: 3rem;
   font-weight: bold;
 }
 
