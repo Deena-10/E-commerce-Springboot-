@@ -1,13 +1,19 @@
 import React, { useEffect } from 'react';
 import { useCart } from '../Context/CartContext';
+import { useNavigate } from 'react-router-dom'; // ✅ Add this line
 import './CartPage.css';
 
 function CartPage() {
-  const { cartItems, loadCart } = useCart();
+  const { cartItems, loadCart, removeFromCart } = useCart();
+  const navigate = useNavigate(); // ✅ Initialize navigate
 
   useEffect(() => {
     loadCart();
   }, [loadCart]);
+
+  const handleBuyNow = (product) => {
+    navigate('/checkout', { state: { product } }); // ✅ Send product to checkout page
+  };
 
   if (cartItems.length === 0) {
     return <p className="empty-message">Your cart is empty.</p>;
@@ -44,9 +50,14 @@ function CartPage() {
                 Stock: {item.stock > 0 ? `${item.stock} available` : 'Out of stock'}
               </span>
               <br />
-              <span className="cart-item-price">
-                ₹{item.price.toFixed(2)}
-              </span>
+              <span className="cart-item-price">₹{item.price.toFixed(2)}</span>
+              <br />
+              <button className="remove-btn" onClick={() => removeFromCart(item.productId)}>
+                Remove
+              </button>
+              <button className="buy-now-btn" onClick={() => handleBuyNow(item)}>
+                Buy Now
+              </button>
             </div>
           </li>
         ))}

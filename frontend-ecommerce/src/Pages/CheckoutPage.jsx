@@ -1,82 +1,140 @@
-// src/pages/CheckoutPage.jsx
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './CheckoutPage.css';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { updateProductStock } from '../Api/ProductsApi';
+import { useLocation } from 'react-router-dom';
+import { fetchProductById } from '../Api/ProductsApi';
 import { placeOrder } from '../Api/OrderApi';
+import { deleteCartItem } from '../Api/CartApi';
 
 function CheckoutPage() {
   const location = useLocation();
-  const navigate = useNavigate();
-  const product = location.state?.product;
+  const rawProduct = location.state?.product;
 
+  const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
+  const [maxStock, setMaxStock] = useState(1);
+  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+  const [notification, setNotification] = useState('');
+  const [isOrderPlaced, setIsOrderPlaced] = useState(false); // ✅ added state
 
-  if (!product) {
-    return (
-      <div className="checkout-container">
-        <p>No product selected for checkout.</p>
-        <button onClick={() => navigate('/')}>Go Back</button>
-      </div>
-    );
-  }
+  useEffect(() => {
+    const normalizeAndFetchStock = async () => {
+      if (!rawProduct) return;
 
-  const handleQuantityChange = (e) => {
-    setQuantity(parseInt(e.target.value));
+      const id = rawProduct.productId || rawProduct.id;
+      const name = rawProduct.productName || rawProduct.name;
+
+      try {
+        const response = await fetchProductById(id);
+        const stock = response.data.stock;
+
+        setMaxStock(stock);
+        setQuantity(rawProduct.quantity || 1);
+
+        setProduct({
+          id,
+          name,
+          description: rawProduct.description || '',
+          price: rawProduct.price,
+          img: rawProduct.img || '',
+        });
+      } catch (error) {
+        console.error('Error fetching stock:', error);
+        showNotification('❌ Error loading product stock.');
+      }
+    };
+
+    normalizeAndFetchStock();
+  }, [rawProduct]);
+
+  const showNotification = (msg) => {
+    setNotification(msg);
+    setTimeout(() => setNotification(''), 3000);
   };
 
   const handlePlaceOrder = async () => {
+    setIsPlacingOrder(true);
     try {
-      // 1. Place the order
-      const orderItem = {
-        productId: product.id,
-        quantity,
-        price: product.price,
-        productName: product.name,
-      };
-      await placeOrder([orderItem]);
+      const latest = await fetchProductById(product.id);
+      if (latest.data.stock < quantity) {
+        showNotification('❌ Not enough stock available. Please try again.');
+        setIsPlacingOrder(false);
+        return;
+      }
 
-      // 2. Calculate new stock and update product stock
-      const newStock = product.stock - quantity;
-      await updateProductStock(product.id, newStock);
+      const orderPayload = [
+        {
+          productId: product.id,
+          productName: product.name,
+          quantity,
+          price: product.price,
+        },
+      ];
 
-      alert(`Order placed successfully!\nProduct: ${product.name}\nQuantity: ${quantity}`);
-      navigate('/');
+      await placeOrder(orderPayload);
+      await deleteCartItem(product.id);
+
+      setIsOrderPlaced(true); // ✅ mark as placed
+      showNotification('✅ Order placed successfully!');
     } catch (error) {
-      console.error('Order placement failed:', error);
-      alert('Failed to place order. Please try again.');
+      console.error('Order failed:', error);
+      showNotification('❌ Order failed. Please try again.');
+    } finally {
+      setIsPlacingOrder(false);
     }
   };
 
-  const totalPrice = (product.price * quantity).toFixed(2);
+  if (!product) return <p>Loading product details...</p>;
 
   return (
     <div className="checkout-container">
       <h2>Checkout</h2>
-
-      <div className="checkout-product">
-        <img src={product.img} alt={product.name} className="checkout-product-img" />
-        <div className="checkout-product-details">
+      <div className="checkout-card">
+        <img
+          src={product.img || 'https://via.placeholder.com/120'}
+          alt={product.name}
+          className="checkout-image"
+        />
+        <div className="checkout-info">
           <h3>{product.name}</h3>
           <p>{product.description}</p>
-          <p><strong>Price:</strong> ${product.price.toFixed(2)}</p>
-          <p><strong>Stock:</strong> {product.stock}</p>
-          <label>
-            <strong>Quantity: </strong>
-            <select value={quantity} onChange={handleQuantityChange}>
-              {Array.from({ length: product.stock }, (_, i) => (
-                <option key={i + 1} value={i + 1}>{i + 1}</option>
+          <p><strong>Price:</strong> ₹{product.price.toFixed(2)}</p>
+          <p>
+            <strong>Quantity:</strong>{' '}
+            <select
+              className="quantity-select"
+              value={quantity}
+              onChange={(e) => setQuantity(parseInt(e.target.value))}
+              disabled={isPlacingOrder || isOrderPlaced}
+            >
+              {[...Array(maxStock).keys()].map((i) => (
+                <option key={i + 1} value={i + 1}>
+                  {i + 1}
+                </option>
               ))}
-            </select>
-          </label>
+            </select>{' '}
+            <span style={{ fontSize: '0.9em' }}>(In stock: {maxStock})</span>
+          </p>
+          <p><strong>Total:</strong> ₹{(product.price * quantity).toFixed(2)}</p>
         </div>
       </div>
 
-      <h3>Total: ${totalPrice}</h3>
-
-      <button onClick={handlePlaceOrder} className="place-order-btn">
-        Place Order
+      <button
+        className={`place-order-btn ${isOrderPlaced ? 'order-success-btn' : ''}`}
+        onClick={handlePlaceOrder}
+        disabled={isPlacingOrder || isOrderPlaced}
+      >
+        {isOrderPlaced
+          ? 'Order Placed'
+          : isPlacingOrder
+          ? 'Placing Order...'
+          : 'Place Order'}
       </button>
+
+      {notification && (
+        <div className="toast-notification">
+          {notification}
+        </div>
+      )}
     </div>
   );
 }

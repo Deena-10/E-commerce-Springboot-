@@ -1,5 +1,5 @@
-import React, { createContext, useState, useContext, useEffect, useCallback } from "react";
-import { fetchCartItems, addCartItem } from "../Api/CartApi";
+import React, { createContext, useState, useContext, useEffect, useCallback } from "react"; 
+import { fetchCartItems, addCartItem, deleteCartItem } from "../Api/CartApi";
 
 const CartContext = createContext();
 
@@ -34,8 +34,18 @@ export const CartProvider = ({ children }) => {
     }
   };
 
+  const removeFromCart = async (productId) => {
+    try {
+      await deleteCartItem(productId);
+      await loadCart();
+    } catch (error) {
+      console.error("Failed to remove item from cart:", error);
+    }
+  };
+
+  // ✅ Return the Provider here
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, loadCart }}>
+    <CartContext.Provider value={{ cartItems, addToCart, loadCart, removeFromCart }}>
       {children}
     </CartContext.Provider>
   );

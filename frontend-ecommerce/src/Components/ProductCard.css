@@ -7,12 +7,12 @@
   margin: 0 auto;
   background-color: #f9f9f9;
 }
-.logo-img {
-  height: 60px;          /* Adjust size as needed */
-  vertical-align: middle;
-  margin-right: 8px;     /* Space between image and text */
-}
 
+.logo-img {
+  height: 60px;
+  vertical-align: middle;
+  margin-right: 8px;
+}
 
 /* Product Card */
 .Card {
@@ -133,23 +133,53 @@
   background-color: #ccc;
   cursor: not-allowed;
 }
-.toast-message {
+
+/* Global Toast Notification (Improved) */
+.global-toast {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background-color: #333;
-  color: #fff;
-  padding: 12px 18px;
-  border-radius: 6px;
+  bottom: 24px;
+  right: 24px;
+  background-color: #e6f4ff;
+  color: #084298;
+  padding: 14px 20px;
+  border-left: 6px solid #2b95ff;
+  border-radius: 8px;
   z-index: 1000;
-  animation: popFade 2.5s ease-out forwards;
-  font-size: 14px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  animation: toastSlideFade 2.8s ease-in-out forwards;
+  font-family: 'Segoe UI', sans-serif;
 }
 
-@keyframes popFade {
-  0% { opacity: 0; transform: translateY(20px) scale(0.95); }
-  10% { opacity: 1; transform: translateY(0) scale(1); }
-  90% { opacity: 1; }
-  100% { opacity: 0; transform: translateY(20px) scale(0.95); }
+.global-toast::before {
+  content: '🛒';
+  font-size: 18px;
+  animation: popIcon 0.4s ease-out;
+}
+
+@keyframes toastSlideFade {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  10% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+}
+
+@keyframes popIcon {
+  0% { transform: scale(0.8); }
+  50% { transform: scale(1.3); }
+  100% { transform: scale(1); }
 }

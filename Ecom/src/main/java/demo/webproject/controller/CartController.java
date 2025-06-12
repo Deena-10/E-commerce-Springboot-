@@ -3,7 +3,15 @@ package demo.webproject.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import demo.webproject.Entity.CartItem;
 import demo.webproject.Entity.Product;
@@ -56,11 +64,14 @@ public class CartController {
         cartService.addCartItem(item);
     }
 
-    // DTO classes
+    @DeleteMapping("/{productId}")
+    public ResponseEntity<Void> deleteCartItem(@PathVariable Long productId) {
+        cartService.removeCartItem(productId);
+        return ResponseEntity.noContent().build();
+    }
     public static class CartItemRequest {
         private Long productId;
         private int quantity;
-
         public Long getProductId() { return productId; }
         public void setProductId(Long productId) { this.productId = productId; }
         public int getQuantity() { return quantity; }
@@ -87,9 +98,9 @@ public class CartController {
             this.rating = rating;
             this.stock = stock;
         }
-
-        // Getters only for response serialization
-        public Long getProductId() { return productId; }
+        public Long getProductId() { 
+        	return productId;
+        	}
         public String getName() { return name; }
         public String getDescription() { return description; }
         public Double getPrice() { return price; }

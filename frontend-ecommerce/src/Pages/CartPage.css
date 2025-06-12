@@ -81,3 +81,34 @@
   text-align: right;
   color: #2980b9;
 }
+.remove-btn {
+  background-color: #5d0b0270;
+  color: #ffffff;
+  border: none;
+  padding: 8px 14px;
+  margin-top: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.remove-btn{
+  background-color: #c0392b;
+}
+.buy-now-btn {
+  background-color: #2ecc71;
+  color: white;
+  padding: 8px 14px;
+  margin-top: 8px;
+  margin-left: 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.buy-now-btn:hover {
+  background-color: #27ae60;
+}
