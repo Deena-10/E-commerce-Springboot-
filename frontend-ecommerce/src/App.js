@@ -3,13 +3,17 @@ import React, { useEffect, useState } from 'react';
 import './App.css';
 import Header from './Components/Header';
 import { ErrorBoundary } from './Components/ErrorBoundary';
-import ProductCard from './Components/ProductCard';
-import { getproducts } from './Api/ProductsApi';  // ensure this function is exported correctly
+import ProductCard from './Components/ProductCard'; // used in HomePage
+import { getproducts } from './Api/ProductsApi';
 import { Routes, Route } from 'react-router-dom';
 import CartPage from './Pages/CartPage';
 import CheckoutPage from './Pages/CheckoutPage';
 import Profile from './Pages/Profile';
+import LoginPage from './Pages/Auth/LoginPage';
+import SignupPage from './Pages/Auth/SignupPage';
+import PrivateRoute from './Pages/Auth/PrivateRoute';
 
+// ✅ HomePage renders a list of ProductCard components
 function HomePage({ products, loading }) {
   return (
     <div className="container">
@@ -44,15 +48,47 @@ function App() {
 
   return (
     <ErrorBoundary>
-      {/* Add Header here to show on every page */}
       <Header />
-      
       <Routes>
-        <Route path="/profile" element={<Profile />} />
+        {/* Public Routes */}
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
 
-        <Route path="/" element={<HomePage products={products} loading={loading} />} />
-        <Route path="/cart" element={<CartPage />} />
-        <Route path="/checkout" element={<CheckoutPage />} />
+        {/* ✅ Home Route: Protected and renders list of ProductCards */}
+        <Route
+          path="/"
+          element={
+            <PrivateRoute>
+              <HomePage products={products} loading={loading} />
+            </PrivateRoute>
+          }
+        />
+
+        {/* Protected Routes */}
+        <Route
+          path="/cart"
+          element={
+            <PrivateRoute>
+              <CartPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/checkout"
+          element={
+            <PrivateRoute>
+              <CheckoutPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <PrivateRoute>
+              <Profile />
+            </PrivateRoute>
+          }
+        />
       </Routes>
     </ErrorBoundary>
   );

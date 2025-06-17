@@ -1,25 +1,15 @@
-.home-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px;
-  background-color: #007bff;
-  color: white;
+/* src/Pages/Home.css */
+.homepage {
+  padding: 20px;
 }
 
-.profile-btn {
-  background-color: white;
-  color: #007bff;
-  padding: 8px 15px;
-  font-size: 16px;
-  font-weight: bold;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px;
-  transition: 0.3s ease-in-out;
+.home-title {
+  text-align: center;
+  margin-bottom: 20px;
 }
 
-.profile-btn:hover {
-  background-color: #0056b3;
-  color: white;
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
 }

@@ -1,7 +1,5 @@
 // src/Api/OrderApi.js
-import axios from 'axios';
-
-const BASE_URL = 'http://localhost:8080/api/orders';
+import axiosInstance from './axiosInstance';
 
 export const placeOrder = (orderItems) =>
-  axios.post(`${BASE_URL}/place`, orderItems);
+  axiosInstance.post('/orders/place', orderItems);

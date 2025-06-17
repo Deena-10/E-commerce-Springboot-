@@ -1,9 +1,6 @@
-import axios from 'axios';
+// src/Api/CartApi.js
+import axiosInstance from './axiosInstance';
 
-const BASE_URL = 'http://localhost:8080/api/cart';
-
-export const fetchCartItems = () => axios.get(BASE_URL);
-export const addCartItem = (item) => axios.post(BASE_URL, item);
-
-// ✅ Add this line for deleting a cart item by productId
-export const deleteCartItem = (productId) => axios.delete(`${BASE_URL}/${productId}`);
+export const fetchCartItems = () => axiosInstance.get('/cart');
+export const addCartItem = (item) => axiosInstance.post('/cart', item);
+export const deleteCartItem = (productId) => axiosInstance.delete(`/cart/${productId}`);
