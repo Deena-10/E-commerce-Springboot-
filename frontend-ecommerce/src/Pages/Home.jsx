@@ -1,29 +1,42 @@
 // src/Pages/Home.jsx
 import React, { useEffect, useState } from 'react';
-import { getproducts } from '../Api/ProductsApi';
 import ProductCard from '../Components/ProductCard';
-import './Home.css'; // Optional: for layout
+import { getproducts } from '../Api/ProductsApi';
+import '../styles/ProductCard.css'; // Optional if you want shared styles
 
 function Home() {
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    getproducts()
-      .then((res) => setProducts(res.data))
-      .catch((err) => console.error('Failed to fetch products:', err));
+    const fetchProducts = async () => {
+      try {
+        const response = await getproducts();
+        setProducts(response.data);
+      } catch (err) {
+        console.error('Error fetching products:', err);
+        setError('Failed to load products.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
   }, []);
 
-  return (
-    <div className="homepage">
-      <h2 className="home-title">Welcome to TechTreasure</h2>
+  if (loading) return <p style={{ textAlign: 'center' }}>Loading products...</p>;
+  if (error) return <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>;
 
-      <div className="product-grid">
-        {products.length ? (
-          products.map((p) => <ProductCard key={p.id} product={p} />)
-        ) : (
-          <p>Loading products...</p>
-        )}
-      </div>
+  return (
+    <div className="product-container">
+      {products.length > 0 ? (
+        products.map((product) => (
+          <ProductCard key={product.id} product={product} />
+        ))
+      ) : (
+        <p style={{ textAlign: 'center' }}>No products available.</p>
+      )}
     </div>
   );
 }

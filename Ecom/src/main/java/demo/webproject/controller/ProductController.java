@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import demo.webproject.Entity.Product;
@@ -20,20 +21,32 @@ public class ProductController {
         this.service = service;
     }
 
-    // ✅ Get all products
+    // ✅ Public: Get all products
     @GetMapping
     public List<Product> showAllProducts() {
         return service.getAllProducts();
     }
 
-    // ✅ Add a new product
+    // ✅ Public: Get product by ID
+    @GetMapping("/{id}")
+    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
+        Product product = service.getProductById(id);
+        if (product == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(product);
+    }
+
+    // 🔐 Admin-only: Add a new product
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public Product addProduct(@RequestBody Product product) {
         return service.addProduct(product);
     }
 
-    // ✅ Update product details
+    // 🔐 Admin-only: Update product details
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product updatedProduct) {
         Product product = service.updateProduct(id, updatedProduct);
         if (product == null) {
@@ -42,8 +55,9 @@ public class ProductController {
         return ResponseEntity.ok(product);
     }
 
-    // ✅ Delete product by ID
+    // 🔐 Admin-only: Delete product
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> deleteProduct(@PathVariable Long id) {
         boolean deleted = service.deleteProduct(id);
         if (!deleted) {
@@ -52,8 +66,9 @@ public class ProductController {
         return ResponseEntity.ok("Product deleted successfully");
     }
 
-    // ✅ Admin: Set exact stock count (absolute value)
+    // 🔐 Admin-only: Set exact stock
     @PutMapping("/updateStock")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Product> updateStock(@RequestBody Map<String, Object> payload) {
         Long productId = Long.valueOf(payload.get("productId").toString());
         int newStock = ((Number) payload.get("stock")).intValue();
@@ -65,23 +80,14 @@ public class ProductController {
         return ResponseEntity.ok(updatedProduct);
     }
 
-    // ✅ Decrease (or increase) stock by quantity (pass -1 to decrease by 1)
+    //Admin-only: Adjust stock by quantity
     @PutMapping("/{id}/stock")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> updateStockByQuantity(@PathVariable Long id, @RequestParam int quantity) {
-        boolean success = service.decreaseStock(id, -quantity); // passing negative to decrease
+        boolean success = service.decreaseStock(id, -quantity); // pass -1 to decrease by 1
         if (!success) {
             return ResponseEntity.badRequest().body("Insufficient stock or update failed");
         }
         return ResponseEntity.ok("Stock updated successfully");
-    }
-
-    // ✅ Get product by ID
-    @GetMapping("/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
-        Product product = service.getProductById(id);
-        if (product == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(product);
     }
 }

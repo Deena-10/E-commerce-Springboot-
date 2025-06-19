@@ -1,9 +1,9 @@
-// src/Components/ProductCard.jsx
 import React, { useState } from 'react';
 import './ProductCard.css';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../Context/CartContext';
 import { fetchProductById } from '../Api/ProductsApi';
+import { getUserRole } from '../utils/getUserRole';
 
 function ProductCard({ product }) {
   const navigate = useNavigate();
@@ -38,6 +38,17 @@ function ProductCard({ product }) {
     }
   };
 
+  const handleEdit = () => {
+    navigate(`/edit-product/${product.id}`); // ⛳️ Route to edit page (you can build it)
+  };
+
+  const handleDelete = () => {
+    if (window.confirm(`Are you sure you want to delete "${product.name}"?`)) {
+      // You can implement the delete logic here (e.g., call DELETE API)
+      alert(`Deleted product ID: ${product.id}`); // For now, just an alert
+    }
+  };
+
   const stars = Array(5)
     .fill(0)
     .map((_, i) => (
@@ -65,9 +76,17 @@ function ProductCard({ product }) {
             Buy Now
           </button>
         </div>
+
+        {/* 🛠 Admin-only actions */}
+        {getUserRole() === 'ADMIN' && (
+          <div className="admin-actions">
+            <button onClick={handleEdit} className="edit-btn">Edit</button>
+            <button onClick={handleDelete} className="delete-btn">Delete</button>
+          </div>
+        )}
       </div>
 
-      {/* Toast message shown globally in bottom right */}
+      {/* Toast message */}
       {showMessage && (
         <div className="global-toast">Product added to your cart!</div>
       )}
