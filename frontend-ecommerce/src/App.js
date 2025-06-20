@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
+import { Routes, Route } from 'react-router-dom';
+
 import Header from './Components/Header';
 import { ErrorBoundary } from './Components/ErrorBoundary';
 import ProductCard from './Components/ProductCard';
 import { getproducts } from './Api/ProductsApi';
-import { Routes, Route } from 'react-router-dom';
 
 import CartPage from './Pages/CartPage';
 import CheckoutPage from './Pages/CheckoutPage';
@@ -12,11 +13,12 @@ import Profile from './Pages/Profile';
 import LoginPage from './Pages/Auth/LoginPage';
 import SignupPage from './Pages/Auth/SignupPage';
 import PrivateRoute from './Pages/Auth/PrivateRoute';
+import MyOrders from './Pages/MyOrders';
+import CategoryPage from './Pages/CategoryPage';
+import CategoryProductsPage from './Pages/CategoryProductsPage';
+import AdminOrders from './Pages/AdminOrders'; // ✅ Import Admin page
 
-import CategoryPage from './Pages/CategoryPage'; // Grid of categories (images)
-import CategoryProductsPage from './Pages/CategoryProductsPage'; // Products by category
-
-// ✅ HomePage: renders all products using ProductCard
+// ✅ Home page component
 function HomePage({ products, loading }) {
   return (
     <div className="container">
@@ -56,11 +58,9 @@ function App() {
         {/* ✅ Public Routes */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
-
-        {/* ✅ Show products for selected category */}
         <Route path="/category/:category" element={<CategoryProductsPage />} />
 
-        {/* ✅ Home page (protected): all products */}
+        {/* ✅ Protected Routes */}
         <Route
           path="/"
           element={
@@ -69,21 +69,19 @@ function App() {
             </PrivateRoute>
           }
         />
-
-        {/* ✅ Protected Routes */}
+        <Route
+          path="/my-orders"
+          element={
+            <PrivateRoute>
+              <MyOrders />
+            </PrivateRoute>
+          }
+        />
         <Route
           path="/cart"
           element={
             <PrivateRoute>
               <CartPage />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/categories"
-          element={
-            <PrivateRoute>
-              <CategoryPage />
             </PrivateRoute>
           }
         />
@@ -100,6 +98,24 @@ function App() {
           element={
             <PrivateRoute>
               <Profile />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/categories"
+          element={
+            <PrivateRoute>
+              <CategoryPage />
+            </PrivateRoute>
+          }
+        />
+
+        {/* ✅ Admin-only Route */}
+        <Route
+          path="/admin/orders"
+          element={
+            <PrivateRoute requiredRole="ADMIN">
+              <AdminOrders />
             </PrivateRoute>
           }
         />

@@ -11,50 +11,28 @@ public class OrderItem {
     private Long id;
 
     private Long productId;
+    private int  quantity;
+    private double price;     // if you store price per item
 
-    private String productName;  // Optional, to keep product snapshot
+    // 🔑  NEW: Many‑to‑one link back to Order
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id")   
+    private Order order;
 
-    private int quantity;
+    /* ---------- getters & setters ---------- */
 
-    private double price; // Optional, product price at order time
+    public Long getId() { return id; }
 
-    public OrderItem() {}
+    public Long getProductId() { return productId; }
+    public void setProductId(Long productId) { this.productId = productId; }
 
-    // Getters and setters
+    public int getQuantity() { return quantity; }
+    public void setQuantity(int quantity) { this.quantity = quantity; }
 
-    public Long getId() {
-        return id;
-    }
+    public double getPrice() { return price; }
+    public void setPrice(double price) { this.price = price; }
 
-    public Long getProductId() {
-        return productId;
-    }
-
-    public void setProductId(Long productId) {
-        this.productId = productId;
-    }
-
-    public String getProductName() {
-        return productName;
-    }
-
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
+    /**  NEW: getter & setter for the parent order  */
+    public Order getOrder() { return order; }
+    public void setOrder(Order order) { this.order = order; }
 }

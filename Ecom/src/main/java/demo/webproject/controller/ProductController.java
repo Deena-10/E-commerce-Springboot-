@@ -51,7 +51,7 @@ public class ProductController {
         return service.addProduct(product);
     }
 
-    // 🔐 Admin-only: Update product details
+    // Admin-only: Update product details
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product updatedProduct) {
@@ -62,7 +62,7 @@ public class ProductController {
         return ResponseEntity.ok(product);
     }
 
-    // 🔐 Admin-only: Delete product
+    // Admin-only: Delete product
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> deleteProduct(@PathVariable Long id) {
@@ -73,7 +73,7 @@ public class ProductController {
         return ResponseEntity.ok("Product deleted successfully");
     }
 
-    // 🔐 Admin-only: Set exact stock
+    // Admin-only: Set exact stock
     @PutMapping("/updateStock")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Product> updateStock(@RequestBody Map<String, Object> payload) {
@@ -87,7 +87,7 @@ public class ProductController {
         return ResponseEntity.ok(updatedProduct);
     }
 
-    // 🔐 Admin-only: Adjust stock by quantity
+    // Admin-only: Adjust stock by quantity
     @PutMapping("/{id}/stock")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> updateStockByQuantity(@PathVariable Long id, @RequestParam int quantity) {
