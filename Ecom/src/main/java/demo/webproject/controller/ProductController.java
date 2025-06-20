@@ -37,6 +37,13 @@ public class ProductController {
         return ResponseEntity.ok(product);
     }
 
+    // ✅ 🔍 Public: Get products by category
+    @GetMapping("/category/{category}")
+    public ResponseEntity<List<Product>> getByCategory(@PathVariable String category) {
+        List<Product> products = service.getProductsByCategory(category);
+        return ResponseEntity.ok(products);
+    }
+
     // 🔐 Admin-only: Add a new product
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
@@ -80,7 +87,7 @@ public class ProductController {
         return ResponseEntity.ok(updatedProduct);
     }
 
-    //Admin-only: Adjust stock by quantity
+    // 🔐 Admin-only: Adjust stock by quantity
     @PutMapping("/{id}/stock")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> updateStockByQuantity(@PathVariable Long id, @RequestParam int quantity) {

@@ -10,3 +10,7 @@ export const updateProductStock = (productId, quantity) =>
 
 export const fetchProductById = (productId) =>
   axiosInstance.get(`/products/${productId}`);
+
+// ✅ NEW: Get products by category
+export const getProductsByCategory = (category) =>
+  axiosInstance.get(`/products/category/${category}`);

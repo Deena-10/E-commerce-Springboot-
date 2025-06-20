@@ -1,11 +1,11 @@
-// src/App.js
 import React, { useEffect, useState } from 'react';
 import './App.css';
 import Header from './Components/Header';
 import { ErrorBoundary } from './Components/ErrorBoundary';
-import ProductCard from './Components/ProductCard'; // used in HomePage
+import ProductCard from './Components/ProductCard';
 import { getproducts } from './Api/ProductsApi';
 import { Routes, Route } from 'react-router-dom';
+
 import CartPage from './Pages/CartPage';
 import CheckoutPage from './Pages/CheckoutPage';
 import Profile from './Pages/Profile';
@@ -13,7 +13,10 @@ import LoginPage from './Pages/Auth/LoginPage';
 import SignupPage from './Pages/Auth/SignupPage';
 import PrivateRoute from './Pages/Auth/PrivateRoute';
 
-// ✅ HomePage renders a list of ProductCard components
+import CategoryPage from './Pages/CategoryPage'; // Grid of categories (images)
+import CategoryProductsPage from './Pages/CategoryProductsPage'; // Products by category
+
+// ✅ HomePage: renders all products using ProductCard
 function HomePage({ products, loading }) {
   return (
     <div className="container">
@@ -50,11 +53,14 @@ function App() {
     <ErrorBoundary>
       <Header />
       <Routes>
-        {/* Public Routes */}
+        {/* ✅ Public Routes */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
 
-        {/* ✅ Home Route: Protected and renders list of ProductCards */}
+        {/* ✅ Show products for selected category */}
+        <Route path="/category/:category" element={<CategoryProductsPage />} />
+
+        {/* ✅ Home page (protected): all products */}
         <Route
           path="/"
           element={
@@ -64,12 +70,20 @@ function App() {
           }
         />
 
-        {/* Protected Routes */}
+        {/* ✅ Protected Routes */}
         <Route
           path="/cart"
           element={
             <PrivateRoute>
               <CartPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/categories"
+          element={
+            <PrivateRoute>
+              <CategoryPage />
             </PrivateRoute>
           }
         />

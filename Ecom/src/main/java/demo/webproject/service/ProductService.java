@@ -59,6 +59,11 @@ public class ProductService {
         return productRepository.save(product);
     }
 
+    public List<Product> getProductsByCategory(String category) {
+        return productRepository.findByCategoryIgnoreCase(category);
+    }
+
+    
     /**
      * Atomically decreases (or increases) stock by qty.
      * @param productId product ID
