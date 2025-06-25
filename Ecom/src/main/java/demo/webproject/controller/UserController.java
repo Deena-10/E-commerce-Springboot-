@@ -1,26 +1,70 @@
 package demo.webproject.controller;
 
+import demo.webproject.Entity.User;
+import demo.webproject.dto.UserProfileDTO;
 import demo.webproject.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/admin")
+@RequestMapping("/api/user")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
+    // ✅ Get profile of logged-in user
+    @GetMapping("/profile")
+    public ResponseEntity<?> getProfile(@AuthenticationPrincipal User user) {
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+        }
+
+        return ResponseEntity.ok(new UserProfileDTO(
+                user.getName(),
+                user.getEmail(),
+                user.getPhoneNumber(),
+                user.getAddress()
+        ));
+    }
+
+    // ✅ Update profile of logged-in user
+    @PutMapping("/profile")
+    public ResponseEntity<?> updateProfile(@AuthenticationPrincipal User user,
+                                           @RequestBody UserProfileDTO updatedProfile) {
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+        }
+
+        user.setName(updatedProfile.getName());
+        user.setPhoneNumber(updatedProfile.getPhoneNumber());
+        user.setAddress(updatedProfile.getAddress());
+
+        userService.save(user); // persist to DB
+
+        return ResponseEntity.ok(new UserProfileDTO(
+                user.getName(),
+                user.getEmail(),
+                user.getPhoneNumber(),
+                user.getAddress()
+        ));
+    }
+
+    // ✅ Admin-only: promote user to admin
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/promote/{userId}")
+    @PutMapping("/admin/promote/{userId}")
     public String promoteToAdmin(@PathVariable Long userId) {
         userService.promoteToAdmin(userId);
         return "User promoted to ADMIN successfully";
     }
 
+    // ✅ Admin-only: demote user to normal
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/demote/{userId}")
+    @PutMapping("/admin/demote/{userId}")
     public String demoteToUser(@PathVariable Long userId) {
         userService.demoteToUser(userId);
         return "User demoted to USER successfully";

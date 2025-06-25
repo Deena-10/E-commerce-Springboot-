@@ -1,24 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 
 import Header from './Components/Header';
 import { ErrorBoundary } from './Components/ErrorBoundary';
 import ProductCard from './Components/ProductCard';
 import { getproducts } from './Api/ProductsApi';
-
+import { Navigate } from 'react-router-dom';
 import CartPage from './Pages/CartPage';
 import CheckoutPage from './Pages/CheckoutPage';
-import Profile from './Pages/Profile';
+import Profile from './Pages/ProfilePage';
 import LoginPage from './Pages/Auth/LoginPage';
 import SignupPage from './Pages/Auth/SignupPage';
 import PrivateRoute from './Pages/Auth/PrivateRoute';
 import MyOrders from './Pages/MyOrders';
 import CategoryPage from './Pages/CategoryPage';
 import CategoryProductsPage from './Pages/CategoryProductsPage';
-import AdminOrders from './Pages/AdminOrders'; // ✅ Import Admin page
+import AdminOrders from './Pages/AdminOrders';
 
-// ✅ Home page component
 function HomePage({ products, loading }) {
   return (
     <div className="container">
@@ -38,6 +37,7 @@ function HomePage({ products, loading }) {
 function App() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const location = useLocation();
 
   useEffect(() => {
     getproducts()
@@ -51,16 +51,18 @@ function App() {
       });
   }, []);
 
+  const hideHeaderPaths = ['/login', '/signup'];
+
   return (
     <ErrorBoundary>
-      <Header />
+      {!hideHeaderPaths.includes(location.pathname) && <Header />}
       <Routes>
-        {/* ✅ Public Routes */}
+        {/* Public Routes */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/category/:category" element={<CategoryProductsPage />} />
 
-        {/* ✅ Protected Routes */}
+        {/* Protected Routes */}
         <Route
           path="/"
           element={
@@ -77,6 +79,10 @@ function App() {
             </PrivateRoute>
           }
         />
+        <Route
+  path="/MyOrders"
+  element={<Navigate to="/my-orders" replace />}
+/> 
         <Route
           path="/cart"
           element={
@@ -110,7 +116,7 @@ function App() {
           }
         />
 
-        {/* ✅ Admin-only Route */}
+        {/* Admin-only Route */}
         <Route
           path="/admin/orders"
           element={

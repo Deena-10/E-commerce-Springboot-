@@ -14,6 +14,7 @@ export const CartProvider = ({ children }) => {
       setCartItems(res.data);
     } catch (error) {
       console.error("Failed to fetch cart:", error);
+      setCartItems([]); // fallback to empty array
     }
   }, []);
 
@@ -27,7 +28,14 @@ export const CartProvider = ({ children }) => {
       return;
     }
     try {
-      await addCartItem({ productId: product.id, quantity: 1 });
+      await addCartItem({
+        productId: product.id,
+        name: product.name,
+        price: product.price,
+        img: product.img,
+        description: product.description,
+        quantity: 1
+      });
       await loadCart();
     } catch (error) {
       console.error("Error adding item:", error);
@@ -43,7 +51,6 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  // ✅ Return the Provider here
   return (
     <CartContext.Provider value={{ cartItems, addToCart, loadCart, removeFromCart }}>
       {children}

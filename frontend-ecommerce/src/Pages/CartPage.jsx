@@ -1,21 +1,21 @@
 import React, { useEffect } from 'react';
 import { useCart } from '../Context/CartContext';
-import { useNavigate } from 'react-router-dom'; // ✅ Add this line
+import { useNavigate } from 'react-router-dom';
 import './CartPage.css';
 
 function CartPage() {
   const { cartItems, loadCart, removeFromCart } = useCart();
-  const navigate = useNavigate(); // ✅ Initialize navigate
+  const navigate = useNavigate();
 
   useEffect(() => {
     loadCart();
   }, [loadCart]);
 
   const handleBuyNow = (product) => {
-    navigate('/checkout', { state: { product } }); // ✅ Send product to checkout page
+    navigate('/checkout', { state: { product } });
   };
 
-  if (cartItems.length === 0) {
+  if (!cartItems || cartItems.length === 0) {
     return <p className="empty-message">Your cart is empty.</p>;
   }
 
@@ -52,7 +52,13 @@ function CartPage() {
               <br />
               <span className="cart-item-price">₹{item.price.toFixed(2)}</span>
               <br />
-              <button className="remove-btn" onClick={() => removeFromCart(item.productId)}>
+              <button
+                className="remove-btn"
+                onClick={() => {
+                  if (item.productId) removeFromCart(item.productId);
+                  else alert("Product ID missing for this item");
+                }}
+              >
                 Remove
               </button>
               <button className="buy-now-btn" onClick={() => handleBuyNow(item)}>
@@ -64,7 +70,9 @@ function CartPage() {
       </ul>
       <h3 className="cart-total">
         Total: ₹
-        {cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2)}
+        {cartItems
+          .reduce((sum, item) => sum + (item.price || 0) * (item.quantity || 1), 0)
+          .toFixed(2)}
       </h3>
     </div>
   );

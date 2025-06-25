@@ -1,32 +1,32 @@
 import React, { useState } from 'react';
-import axios from '../../Api/axiosInstance'; // ✅ custom instance for JWT
+import axios from 'axios'; // ✅ plain axios without interceptors
 import { useNavigate, Link } from 'react-router-dom'; 
 import '../../styles/Login.css';
-import { useAuth } from '../../Context/AuthContext'; // ✅ Import Auth Context
+import { useAuth } from '../../Context/AuthContext'; // ✅ Auth Context
 
 function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { login } = useAuth(); // ✅ use login function from context
+  const { login } = useAuth(); // ✅ get login from context
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const res = await axios.post('/auth/login', {
+      const res = await axios.post('http://localhost:8080/api/auth/login', {
         email,
         password,
       });
 
-      const { token, role } = res.data;
+      const { accessToken, refreshToken, role } = res.data;
 
-      if (token) {
-        login(token, role); // ✅ update context and localStorage
+      if (accessToken && refreshToken) {
+        login(accessToken, role, refreshToken); // ✅ Save tokens and role
         alert('Login successful!');
-        navigate('/'); // ✅ Redirect to homepage
+        navigate('/');
       } else {
         throw new Error('Token not received');
       }
@@ -36,7 +36,7 @@ function LoginPage() {
       if (err.response?.status === 403 || err.response?.status === 401) {
         alert('Invalid credentials. Please try again.');
       } else {
-        alert('Login failed: ' + (err.response?.data?.message || 'Server error'));
+        alert('Login failed: ' + (err.response?.data || 'Server error'));
       }
 
     } finally {

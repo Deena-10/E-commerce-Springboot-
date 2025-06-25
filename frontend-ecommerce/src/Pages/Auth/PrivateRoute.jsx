@@ -1,21 +1,31 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import { useAuth } from '../../Context/AuthContext'; // Make sure this exists
+import { jwtDecode } from 'jwt-decode';
+
+const getTokenPayload = () => {
+  const token = localStorage.getItem('token');
+  if (!token) return null;
+
+  try {
+    const decoded = jwtDecode(token);
+    const isExpired = decoded.exp * 1000 < Date.now();
+    return isExpired ? null : decoded;
+  } catch {
+    return null;
+  }
+};
 
 const PrivateRoute = ({ children, requiredRole }) => {
-  const { isAuthenticated, user } = useAuth();
+  const payload = getTokenPayload();
 
-  // If not logged in, redirect to login
-  if (!isAuthenticated) {
+  if (!payload) {
     return <Navigate to="/login" replace />;
   }
 
-  // If role-based access is required and doesn't match, redirect to home
-  if (requiredRole && user?.role !== requiredRole) {
+  if (requiredRole && payload.role !== requiredRole) {
     return <Navigate to="/" replace />;
   }
 
-  // Authenticated (and authorized if applicable)
   return children;
 };
 

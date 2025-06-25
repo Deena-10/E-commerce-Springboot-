@@ -1,12 +1,14 @@
+// src/Pages/CheckoutPage.jsx
 import React, { useEffect, useState } from 'react';
 import './CheckoutPage.css';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { fetchProductById } from '../Api/ProductsApi';
 import { placeOrder } from '../Api/OrderApi';
 import { deleteCartItem } from '../Api/CartApi';
 
 function CheckoutPage() {
   const location = useLocation();
+  const navigate = useNavigate();
   const rawProduct = location.state?.product;
 
   const [product, setProduct] = useState(null);
@@ -14,7 +16,7 @@ function CheckoutPage() {
   const [maxStock, setMaxStock] = useState(1);
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [notification, setNotification] = useState('');
-  const [isOrderPlaced, setIsOrderPlaced] = useState(false); // ✅ added state
+  const [isOrderPlaced, setIsOrderPlaced] = useState(false);
 
   useEffect(() => {
     const normalizeAndFetchStock = async () => {
@@ -52,7 +54,10 @@ function CheckoutPage() {
   };
 
   const handlePlaceOrder = async () => {
+    if (!product) return;
+
     setIsPlacingOrder(true);
+
     try {
       const latest = await fetchProductById(product.id);
       if (latest.data.stock < quantity) {
@@ -61,20 +66,16 @@ function CheckoutPage() {
         return;
       }
 
-      const orderPayload = [
-        {
-          productId: product.id,
-          productName: product.name,
-          quantity,
-          price: product.price,
-        },
-      ];
+      const orderPayload = [{ productId: product.id, quantity }];
 
       await placeOrder(orderPayload);
       await deleteCartItem(product.id);
 
-      setIsOrderPlaced(true); // ✅ mark as placed
+      setIsOrderPlaced(true);
       showNotification('✅ Order placed successfully!');
+
+      // Navigate to order history page
+      setTimeout(() => navigate('/my-orders'), 100);
     } catch (error) {
       console.error('Order failed:', error);
       showNotification('❌ Order failed. Please try again.');
@@ -106,7 +107,7 @@ function CheckoutPage() {
               onChange={(e) => setQuantity(parseInt(e.target.value))}
               disabled={isPlacingOrder || isOrderPlaced}
             >
-              {[...Array(maxStock).keys()].map((i) => (
+              {[...Array(maxStock).keys()].map((_, i) => (
                 <option key={i + 1} value={i + 1}>
                   {i + 1}
                 </option>

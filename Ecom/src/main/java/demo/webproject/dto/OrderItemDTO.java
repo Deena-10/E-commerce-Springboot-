@@ -2,17 +2,23 @@ package demo.webproject.dto;
 
 public class OrderItemDTO {
     private Long productId;
+    private String productName; // ✅ NEW
     private int quantity;
     private double price;
 
-    public OrderItemDTO(Long productId, int quantity, double price) {
+    public OrderItemDTO(Long productId, String productName, int quantity, double price) {
         this.productId = productId;
+        this.productName = productName;
         this.quantity = quantity;
         this.price = price;
     }
 
     public Long getProductId() {
         return productId;
+    }
+
+    public String getProductName() {
+        return productName;
     }
 
     public int getQuantity() {

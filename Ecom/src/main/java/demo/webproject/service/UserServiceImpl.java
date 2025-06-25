@@ -26,4 +26,10 @@ public class UserServiceImpl implements UserService {
         user.setRole("USER");
         userRepository.save(user);
     }
+
+    // ✅ This method allows saving updated user info (name, phone, address, etc.)
+    @Override
+    public void save(User user) {
+        userRepository.save(user);
+    }
 }
