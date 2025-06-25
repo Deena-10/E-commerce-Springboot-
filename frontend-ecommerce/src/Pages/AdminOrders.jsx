@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../Api/axiosInstance'; // Use your configured axiosInstance
 import '../styles/MyOrders.css';
 
 const AdminOrders = () => {
@@ -7,7 +7,7 @@ const AdminOrders = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get('http://localhost:8080/api/orders/all', { withCredentials: true })
+    axiosInstance.get('/api/orders/all')
       .then((res) => {
         setOrders(res.data);
         setLoading(false);

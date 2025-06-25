@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Header.css';
 import logo from '../img/updatedlogo.jpg';
-import { useAuth } from '../Context/AuthContext'; // ✅
+import { useAuth } from '../Context/AuthContext'; // ✅ Auth context
 
 const Header = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
-  const { isAuthenticated, logout } = useAuth(); // ✅
+  const { isAuthenticated, logout, user } = useAuth(); // ✅ Get user info
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -45,6 +45,11 @@ const Header = () => {
         <Link to="/MyOrders">My Orders</Link>
         <Link to="/cart">Cart</Link>
         <Link to="/help">Help</Link>
+
+        {/* ✅ Admin-only link */}
+        {user?.role === 'ADMIN' && (
+          <Link to="/admin/orders">Admin Dashboard</Link>
+        )}
 
         {!isAuthenticated ? (
           <>
