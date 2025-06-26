@@ -7,8 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/api/user")
@@ -19,10 +20,13 @@ public class UserController {
 
     // ✅ Get profile of logged-in user
     @GetMapping("/profile")
-    public ResponseEntity<?> getProfile(@AuthenticationPrincipal User user) {
-        if (user == null) {
+    public ResponseEntity<?> getProfile(Principal principal) {
+        if (principal == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
         }
+
+        String email = principal.getName();
+        User user = userService.findByEmail(email);
 
         return ResponseEntity.ok(new UserProfileDTO(
                 user.getName(),
@@ -34,11 +38,14 @@ public class UserController {
 
     // ✅ Update profile of logged-in user
     @PutMapping("/profile")
-    public ResponseEntity<?> updateProfile(@AuthenticationPrincipal User user,
+    public ResponseEntity<?> updateProfile(Principal principal,
                                            @RequestBody UserProfileDTO updatedProfile) {
-        if (user == null) {
+        if (principal == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
         }
+
+        String email = principal.getName();
+        User user = userService.findByEmail(email);
 
         user.setName(updatedProfile.getName());
         user.setPhoneNumber(updatedProfile.getPhoneNumber());

@@ -9,7 +9,8 @@ function ProductCard({ product }) {
   const navigate = useNavigate();
   const { addToCart } = useCart();
   const [showMessage, setShowMessage] = useState(false);
-  const [stock, setStock] = useState(product?.stock ?? 0);
+  const [stock] = useState(product?.stock ?? 0);
+
 
   if (!product) {
     return (
@@ -39,13 +40,12 @@ function ProductCard({ product }) {
   };
 
   const handleEdit = () => {
-    navigate(`/edit-product/${product.id}`); // ⛳️ Route to edit page (you can build it)
+    navigate(`/edit-product/${product.id}`);
   };
 
   const handleDelete = () => {
     if (window.confirm(`Are you sure you want to delete "${product.name}"?`)) {
-      // You can implement the delete logic here (e.g., call DELETE API)
-      alert(`Deleted product ID: ${product.id}`); // For now, just an alert
+      alert(`Deleted product ID: ${product.id}`);
     }
   };
 
@@ -67,7 +67,12 @@ function ProductCard({ product }) {
         <p className="desc">{product.description}</p>
         <div className="rating">{stars}</div>
         <div className="price">₹{product.price.toFixed(2)}</div>
-        <div className="stock">{stock > 0 ? `${stock} in stock` : 'Out of stock'}</div>
+
+        {/* ✅ Color-coded stock status */}
+        <div className={`stock ${stock > 0 ? 'in-stock' : 'out-of-stock'}`}>
+          {stock > 0 ? `${stock} in stock` : 'Out of stock'}
+        </div>
+
         <div className="button-group">
           <button className="addtocart" onClick={handleAddToCart} disabled={stock === 0}>
             {stock === 0 ? 'Out of Stock' : 'Add to Cart'}
@@ -86,7 +91,6 @@ function ProductCard({ product }) {
         )}
       </div>
 
-      {/* Toast message */}
       {showMessage && (
         <div className="global-toast">Product added to your cart!</div>
       )}

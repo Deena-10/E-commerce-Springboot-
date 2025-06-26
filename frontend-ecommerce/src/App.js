@@ -17,6 +17,8 @@ import MyOrders from './Pages/MyOrders';
 import CategoryPage from './Pages/CategoryPage';
 import CategoryProductsPage from './Pages/CategoryProductsPage';
 import AdminOrders from './Pages/AdminOrders';
+import HelpPage from './Pages/HelpPage';
+
 
 function HomePage({ products, loading }) {
   return (
@@ -61,6 +63,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/category/:category" element={<CategoryProductsPage />} />
+<Route path="/help" element={<HelpPage />} />
 
         {/* Protected Routes */}
         <Route

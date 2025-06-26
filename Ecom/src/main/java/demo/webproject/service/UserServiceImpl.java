@@ -26,6 +26,11 @@ public class UserServiceImpl implements UserService {
         user.setRole("USER");
         userRepository.save(user);
     }
+    @Override
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found: " + email));
+    }
 
     // ✅ This method allows saving updated user info (name, phone, address, etc.)
     @Override

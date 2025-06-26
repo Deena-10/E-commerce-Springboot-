@@ -44,7 +44,7 @@ const Header = () => {
         <Link to="/categories">Categories</Link>
         <Link to="/MyOrders">My Orders</Link>
         <Link to="/cart">Cart</Link>
-        <Link to="/help">Help</Link>
+        
 
         {/* ✅ Admin-only link */}
         {user?.role === 'ADMIN' && (
@@ -58,6 +58,7 @@ const Header = () => {
           </>
         ) : (
           <>
+          <Link to="/help">Help</Link>
             <Link to="/profile">Profile</Link>
             <button onClick={handleLogout} className="logout-btn">Logout</button>
           </>

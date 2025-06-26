@@ -206,3 +206,16 @@
 .delete-btn {
   background-color: #e74c3c;
 }
+.stock {
+  font-weight: bold;
+  margin: 10px 0;
+  font-size: 1rem;
+}
+
+.in-stock {
+  color: green;
+}
+
+.out-of-stock {
+  color: red;
+}
