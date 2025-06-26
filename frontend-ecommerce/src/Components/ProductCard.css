@@ -1,9 +1,9 @@
 .product-list {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 32px;
-  padding: 24px;
-  max-width: 1200px;
+  gap: 50px 36px; /* 48px vertical space, 36px horizontal space */
+  padding: 32px;
+  max-width: 1400px;
   margin: 0 auto;
   background-color: #f9f9f9;
 }
@@ -219,3 +219,32 @@
 .out-of-stock {
   color: red;
 }
+.search-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.suggestions-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid #ccc;
+  z-index: 1000;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.suggestions-list li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.suggestions-list li:hover {
+  background-color: #f1f1f1;
+}
+

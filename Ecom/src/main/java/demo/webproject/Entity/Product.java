@@ -17,7 +17,8 @@ public class Product {
     private double price;
 
     private String category; // ✅ New field
-
+    @Column(nullable = false)
+    private boolean deleted = false; 
     // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -42,4 +43,7 @@ public class Product {
 
     public String getCategory() { return category; }
     public void setCategory(String category) { this.category = category; }
+    
+    public boolean isDeleted() { return deleted; }
+    public void setDeleted(boolean deleted) { this.deleted = deleted; }
 }

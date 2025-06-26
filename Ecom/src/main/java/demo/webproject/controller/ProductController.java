@@ -61,6 +61,12 @@ public class ProductController {
         }
         return ResponseEntity.ok(product);
     }
+    @GetMapping("/search-suggestions")
+    public ResponseEntity<List<String>> getSuggestions(@RequestParam("query") String query) {
+        List<String> suggestions = service.getSuggestions(query);
+        return ResponseEntity.ok(suggestions);
+    }
+
 
     // Admin-only: Delete product
     @DeleteMapping("/{id}")

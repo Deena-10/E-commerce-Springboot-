@@ -1,19 +1,47 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Header.css';
 import logo from '../img/updatedlogo.jpg';
-import { useAuth } from '../Context/AuthContext'; // ✅ Auth context
+import { useAuth } from '../Context/AuthContext';
+import axios from '../Api/axiosInstance';
 
 const Header = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [suggestions, setSuggestions] = useState([]);
   const navigate = useNavigate();
-  const { isAuthenticated, logout, user } = useAuth(); // ✅ Get user info
+  const { isAuthenticated, logout, user } = useAuth();
+
+  useEffect(() => {
+    const fetchSuggestions = async () => {
+      if (!searchTerm.trim()) {
+        setSuggestions([]);
+        return;
+      }
+      try {
+        const res = await axios.get(`/products/search-suggestions?query=${encodeURIComponent(searchTerm)}`);
+        setSuggestions(res.data);
+      } catch (err) {
+        console.error('Error fetching suggestions:', err);
+        setSuggestions([]);
+      }
+    };
+
+    const delayDebounce = setTimeout(fetchSuggestions, 300); // debounce
+    return () => clearTimeout(delayDebounce);
+  }, [searchTerm]);
 
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchTerm.trim()) {
       navigate(`/search?query=${encodeURIComponent(searchTerm.trim())}`);
+      setSuggestions([]);
     }
+  };
+
+  const handleSuggestionClick = (text) => {
+    setSearchTerm(text);
+    navigate(`/search?query=${encodeURIComponent(text)}`);
+    setSuggestions([]);
   };
 
   const handleLogout = () => {
@@ -29,13 +57,24 @@ const Header = () => {
       </h1>
 
       <form onSubmit={handleSearch} className="search-form">
-        <input
-          type="text"
-          placeholder="Search products..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="search-input"
-        />
+        <div className="search-wrapper">
+          <input
+            type="text"
+            className="search-input"
+            placeholder="Search products..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          {suggestions.length > 0 && (
+            <ul className="suggestions-list">
+              {suggestions.map((s, i) => (
+                <li key={i} onClick={() => handleSuggestionClick(s)}>
+                  {s}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
         <button type="submit" className="search-button">🔍</button>
       </form>
 
@@ -44,13 +83,7 @@ const Header = () => {
         <Link to="/categories">Categories</Link>
         <Link to="/MyOrders">My Orders</Link>
         <Link to="/cart">Cart</Link>
-        
-
-        {/* ✅ Admin-only link */}
-        {user?.role === 'ADMIN' && (
-          <Link to="/admin/orders">Admin Dashboard</Link>
-        )}
-
+        {user?.role === 'ADMIN' && <Link to="/admin/orders">Admin Dashboard</Link>}
         {!isAuthenticated ? (
           <>
             <Link to="/login">Login</Link>
@@ -58,7 +91,7 @@ const Header = () => {
           </>
         ) : (
           <>
-          <Link to="/help">Help</Link>
+            <Link to="/help">Help</Link>
             <Link to="/profile">Profile</Link>
             <button onClick={handleLogout} className="logout-btn">Logout</button>
           </>
