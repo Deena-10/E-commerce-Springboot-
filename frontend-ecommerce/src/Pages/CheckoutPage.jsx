@@ -1,10 +1,10 @@
-// src/Pages/CheckoutPage.jsx
 import React, { useEffect, useState } from 'react';
 import './CheckoutPage.css';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { fetchProductById } from '../Api/ProductsApi';
 import { placeOrder } from '../Api/OrderApi';
 import { deleteCartItem } from '../Api/CartApi';
+import axiosInstance from '../Api/axiosInstance';
 
 function CheckoutPage() {
   const location = useLocation();
@@ -14,7 +14,6 @@ function CheckoutPage() {
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [maxStock, setMaxStock] = useState(1);
-  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [notification, setNotification] = useState('');
   const [isOrderPlaced, setIsOrderPlaced] = useState(false);
 
@@ -53,34 +52,63 @@ function CheckoutPage() {
     setTimeout(() => setNotification(''), 3000);
   };
 
-  const handlePlaceOrder = async () => {
+  const handlePayNow = async () => {
     if (!product) return;
-
-    setIsPlacingOrder(true);
 
     try {
       const latest = await fetchProductById(product.id);
       if (latest.data.stock < quantity) {
         showNotification('❌ Not enough stock available. Please try again.');
-        setIsPlacingOrder(false);
         return;
       }
 
-      const orderPayload = [{ productId: product.id, quantity }];
+      const amount = product.price * quantity;
 
-      await placeOrder(orderPayload);
-      await deleteCartItem(product.id);
+      // Step 1: Call backend to create Razorpay order
+      const res = await axiosInstance.post('/api/payment/create-order', {
+        amount: Math.round(amount),
+      });
 
-      setIsOrderPlaced(true);
-      showNotification('✅ Order placed successfully!');
+      const { orderId } = res.data;
 
-      // Navigate to order history page
-      setTimeout(() => navigate('/my-orders'), 100);
+      // Step 2: Open Razorpay modal
+      const options = {
+        key: 'rzp_test_P4kKhexANqaqRH', // Replace with your Razorpay Test Key ID
+        amount: amount * 100,
+        currency: 'INR',
+        name: 'TechTreasure',
+        description: `Order for ${product.name}`,
+        image: 'https://via.placeholder.com/100x50.png?text=Logo',
+        order_id: orderId,
+        handler: async function (response) {
+          // Step 3: On payment success
+          try {
+            const orderPayload = [{ productId: product.id, quantity }];
+            await placeOrder(orderPayload);
+            await deleteCartItem(product.id);
+
+            setIsOrderPlaced(true);
+            showNotification('✅ Payment & Order placed successfully!');
+            setTimeout(() => navigate('/my-orders'), 1000);
+          } catch (err) {
+            console.error('Error finalizing order:', err);
+            showNotification('❌ Payment succeeded but order failed.');
+          }
+        },
+        prefill: {
+          name: 'Your Name',
+          email: 'youremail@example.com',
+        },
+        theme: {
+          color: '#3399cc',
+        },
+      };
+
+      const razor = new window.Razorpay(options);
+      razor.open();
     } catch (error) {
-      console.error('Order failed:', error);
-      showNotification('❌ Order failed. Please try again.');
-    } finally {
-      setIsPlacingOrder(false);
+      console.error('Payment failed:', error);
+      showNotification('❌ Payment failed. Please try again.');
     }
   };
 
@@ -105,7 +133,7 @@ function CheckoutPage() {
               className="quantity-select"
               value={quantity}
               onChange={(e) => setQuantity(parseInt(e.target.value))}
-              disabled={isPlacingOrder || isOrderPlaced}
+              disabled={isOrderPlaced}
             >
               {[...Array(maxStock).keys()].map((_, i) => (
                 <option key={i + 1} value={i + 1}>
@@ -121,14 +149,10 @@ function CheckoutPage() {
 
       <button
         className={`place-order-btn ${isOrderPlaced ? 'order-success-btn' : ''}`}
-        onClick={handlePlaceOrder}
-        disabled={isPlacingOrder || isOrderPlaced}
+        onClick={handlePayNow}
+        disabled={isOrderPlaced}
       >
-        {isOrderPlaced
-          ? 'Order Placed'
-          : isPlacingOrder
-          ? 'Placing Order...'
-          : 'Place Order'}
+        {isOrderPlaced ? 'Order Placed' : 'Pay Now'}
       </button>
 
       {notification && (
