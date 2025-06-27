@@ -11,22 +11,22 @@ const Header = () => {
   const navigate = useNavigate();
   const { isAuthenticated, logout, user } = useAuth();
 
+  // Fetch search suggestions
   useEffect(() => {
-    const fetchSuggestions = async () => {
-      if (!searchTerm.trim()) {
-        setSuggestions([]);
-        return;
-      }
+    if (!searchTerm.trim()) {
+      setSuggestions([]);
+      return;
+    }
+
+    const delayDebounce = setTimeout(async () => {
       try {
         const res = await axios.get(`/products/search-suggestions?query=${encodeURIComponent(searchTerm)}`);
-        setSuggestions(res.data);
+        setSuggestions(res.data || []);
       } catch (err) {
         console.error('Error fetching suggestions:', err);
-        setSuggestions([]);
       }
-    };
+    }, 300); // debounce 300ms
 
-    const delayDebounce = setTimeout(fetchSuggestions, 300); // debounce
     return () => clearTimeout(delayDebounce);
   }, [searchTerm]);
 
@@ -34,14 +34,14 @@ const Header = () => {
     e.preventDefault();
     if (searchTerm.trim()) {
       navigate(`/search?query=${encodeURIComponent(searchTerm.trim())}`);
-      setSuggestions([]);
+      setSuggestions([]); // clear suggestions
     }
   };
 
   const handleSuggestionClick = (text) => {
-    setSearchTerm(text);
     navigate(`/search?query=${encodeURIComponent(text)}`);
     setSuggestions([]);
+    setSearchTerm(text);
   };
 
   const handleLogout = () => {
@@ -56,26 +56,26 @@ const Header = () => {
         ByteNest Gadgets
       </h1>
 
-      <form onSubmit={handleSearch} className="search-form">
-        <div className="search-wrapper">
-          <input
-            type="text"
-            className="search-input"
-            placeholder="Search products..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          {suggestions.length > 0 && (
-            <ul className="suggestions-list">
-              {suggestions.map((s, i) => (
-                <li key={i} onClick={() => handleSuggestionClick(s)}>
-                  {s}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+      <form onSubmit={handleSearch} className="search-form" autoComplete="off">
+        <input
+          type="text"
+          placeholder="Search products..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="search-input"
+        />
         <button type="submit" className="search-button">🔍</button>
+
+        {/* Suggestions Dropdown */}
+        {Array.isArray(suggestions) && suggestions.length > 0 && (
+          <ul className="suggestions-list">
+            {suggestions.map((item, index) => (
+              <li key={index} onClick={() => handleSuggestionClick(item)}>
+                {item}
+              </li>
+            ))}
+          </ul>
+        )}
       </form>
 
       <nav className="nav">
@@ -83,7 +83,11 @@ const Header = () => {
         <Link to="/categories">Categories</Link>
         <Link to="/MyOrders">My Orders</Link>
         <Link to="/cart">Cart</Link>
-        {user?.role === 'ADMIN' && <Link to="/admin/orders">Admin Dashboard</Link>}
+
+        {user?.role === 'ADMIN' && (
+          <Link to="/admin/orders">Admin Dashboard</Link>
+        )}
+
         {!isAuthenticated ? (
           <>
             <Link to="/login">Login</Link>

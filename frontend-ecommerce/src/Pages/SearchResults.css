@@ -1,0 +1,29 @@
+/* Container around the search results */
+.search-results-container {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: "Segoe UI", sans-serif;
+}
+
+/* Search heading */
+.search-results-container h2 {
+  font-size: 1.4rem;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* If no results */
+.no-results {
+  font-size: 1.1rem;
+  color: #777;
+  text-align: center;
+  margin-top: 40px;
+}
+
+/* Product grid (same as .product-list) */
+.product-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 40px 36px; /* vertical | horizontal spacing */
+}

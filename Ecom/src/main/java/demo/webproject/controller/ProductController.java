@@ -2,10 +2,20 @@ package demo.webproject.controller;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import demo.webproject.Entity.Product;
 import demo.webproject.service.ProductService;
@@ -78,6 +88,18 @@ public class ProductController {
         }
         return ResponseEntity.ok("Product deleted successfully");
     }
+    
+ // ✅ Public: Search by name or category
+    @GetMapping("/search")
+    public ResponseEntity<List<Product>> searchProducts(@RequestParam("query") String query) {
+        List<Product> allProducts = service.getAllProducts();
+        List<Product> filtered = allProducts.stream()
+            .filter(p -> p.getName().toLowerCase().contains(query.toLowerCase()) ||
+                         (p.getCategory() != null && p.getCategory().toLowerCase().contains(query.toLowerCase())))
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(filtered);
+    }
+
 
     // Admin-only: Set exact stock
     @PutMapping("/updateStock")

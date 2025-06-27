@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 
 import Header from './Components/Header';
 import { ErrorBoundary } from './Components/ErrorBoundary';
 import ProductCard from './Components/ProductCard';
 import { getproducts } from './Api/ProductsApi';
-import { Navigate } from 'react-router-dom';
+
 import CartPage from './Pages/CartPage';
 import CheckoutPage from './Pages/CheckoutPage';
 import Profile from './Pages/ProfilePage';
@@ -18,11 +18,12 @@ import CategoryPage from './Pages/CategoryPage';
 import CategoryProductsPage from './Pages/CategoryProductsPage';
 import AdminOrders from './Pages/AdminOrders';
 import HelpPage from './Pages/HelpPage';
+import SearchResults from './Pages/SearchResults'; // ✅ Added
 
-
+// App.js
 function HomePage({ products, loading }) {
   return (
-    <div className="container">
+    <div className="product-grid">
       {loading ? (
         <p>Loading products...</p>
       ) : products.length === 0 ? (
@@ -35,6 +36,7 @@ function HomePage({ products, loading }) {
     </div>
   );
 }
+
 
 function App() {
   const [products, setProducts] = useState([]);
@@ -63,7 +65,8 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/category/:category" element={<CategoryProductsPage />} />
-<Route path="/help" element={<HelpPage />} />
+        <Route path="/help" element={<HelpPage />} />
+        <Route path="/search" element={<SearchResults />} /> {/* ✅ Search page */}
 
         {/* Protected Routes */}
         <Route
@@ -83,9 +86,9 @@ function App() {
           }
         />
         <Route
-  path="/MyOrders"
-  element={<Navigate to="/my-orders" replace />}
-/> 
+          path="/MyOrders"
+          element={<Navigate to="/my-orders" replace />}
+        />
         <Route
           path="/cart"
           element={
