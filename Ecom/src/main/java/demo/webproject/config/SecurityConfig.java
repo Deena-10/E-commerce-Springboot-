@@ -1,6 +1,7 @@
 package demo.webproject.config;
 
 import demo.webproject.security.JwtAuthenticationFilter;
+import demo.webproject.security.OAuth2LoginSuccessHandler;
 import demo.webproject.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -21,7 +22,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(prePostEnabled = true) // Enables @PreAuthorize and method-level restrictions
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
     @Autowired
@@ -31,42 +32,39 @@ public class SecurityConfig {
     private CustomAccessDeniedhandler accessDeniedHandler;
 
     @Autowired
+    private OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+
+    @Autowired
     private CustomUserDetailsService userDetailsService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
-            .cors(cors -> {}) // Uses global CORS config
+            .cors(cors -> {}) // Make sure CORS config is present globally
             .authorizeHttpRequests(auth -> auth
-                // Public endpoints
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/search**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/products", "/api/products/**").permitAll()
-
-                // Admin-only for product modifications
+                .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll() // Allow OAuth2 flow
                 .requestMatchers(HttpMethod.POST, "/api/products/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/products/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/products/**").hasRole("ADMIN")
-
-                // Authenticated user access
                 .requestMatchers(HttpMethod.POST, "/api/orders/place").authenticated()
                 .requestMatchers(HttpMethod.GET, "/api/orders/my").authenticated()
                 .requestMatchers("/api/cart/**").authenticated()
-
-
-                // Admin-only access
                 .requestMatchers(HttpMethod.GET, "/api/orders/all").hasRole("ADMIN")
-
-                // Catch-all
                 .anyRequest().authenticated()
             )
-            .exceptionHandling(e -> e
+            .exceptionHandling(ex -> ex
                 .accessDeniedHandler(accessDeniedHandler)
                 .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
             )
-            .sessionManagement(session -> session
+            .sessionManagement(sess -> sess
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            )
+            .oauth2Login(oauth2 -> oauth2
+                .successHandler(oAuth2LoginSuccessHandler) // Custom handler to generate JWT
             )
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -75,7 +73,7 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); // Strong password encryption
+        return new BCryptPasswordEncoder();
     }
 
     @Bean

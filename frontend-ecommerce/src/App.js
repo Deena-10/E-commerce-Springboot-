@@ -19,7 +19,7 @@ import CategoryProductsPage from './Pages/CategoryProductsPage';
 import AdminOrders from './Pages/AdminOrders';
 import HelpPage from './Pages/HelpPage';
 import SearchResults from './Pages/SearchResults'; // ✅ Added
-
+import OAuthCallback from './Components/OAuthCallback';
 // App.js
 function HomePage({ products, loading }) {
   return (
@@ -64,6 +64,8 @@ function App() {
         {/* Public Routes */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
+        <Route path="/oauth2/callback" element={<OAuthCallback />} />
+
         <Route path="/category/:category" element={<CategoryProductsPage />} />
         <Route path="/help" element={<HelpPage />} />
         <Route path="/search" element={<SearchResults />} /> {/* ✅ Search page */}

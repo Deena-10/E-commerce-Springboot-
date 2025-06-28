@@ -17,44 +17,45 @@ function SignupPage() {
         email,
         password,
       });
-      alert(res.data || 'Signup successful!'); // ✅ show response message or fallback
-      navigate('/login'); // ✅ redirect to login page after signup
+      alert(res.data || 'Signup successful!');
+      navigate('/login');
     } catch (err) {
-      alert('Signup failed: ' + (err.response?.data || 'Server error')); // ✅ safe chaining
+      alert('Signup failed: ' + (err.response?.data || 'Server error'));
     }
   };
 
   return (
     <div className="auth-container">
-      <h2>Signup</h2>
-      <form onSubmit={handleSignup}>
-        <input
-          type="text"
-          value={name}
-          onChange={e => setName(e.target.value)}
-          placeholder="Name"
-          required
-        />
-        <input
-          type="email"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          placeholder="Email"
-          required
-        />
-        <input
-          type="password"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          placeholder="Password"
-          required
-        />
-        <button type="submit">Signup</button>
-      </form>
-
-      <p className="auth-switch">
-        Already have an account? <Link to="/login">Login here</Link>
-      </p>
+      <div className="signup-box">
+        <h2>Create Your Account</h2>
+        <form onSubmit={handleSignup}>
+          <input
+            type="text"
+            value={name}
+            onChange={e => setName(e.target.value)}
+            placeholder="Full Name"
+            required
+          />
+          <input
+            type="email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            placeholder="Email Address"
+            required
+          />
+          <input
+            type="password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            placeholder="Password"
+            required
+          />
+          <button type="submit">Sign Up</button>
+        </form>
+        <p className="auth-switch">
+          Already have an account? <Link to="/login">Login here</Link>
+        </p>
+      </div>
     </div>
   );
 }

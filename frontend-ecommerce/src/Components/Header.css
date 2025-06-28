@@ -19,38 +19,49 @@
 }
 
 .search-form {
-  flex-grow: 1;
-  max-width: 400px;
   display: flex;
   align-items: center;
+  gap: 8px;
 }
 
 .search-input {
-  flex-grow: 1;
-  padding: 7px 10px;
-  border: none;
-  border-radius: 4px 0 0 4px;
-  font-size: 1rem;
+  padding: 10px 14px;
+  height: 40px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 15px;
+  width: 240px;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
 }
 
 .search-input:focus {
   outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 0 5px rgba(74, 144, 226, 0.4);
 }
 
 .search-button {
-  background-color: #0056b3;
+  height: 40px; /* ✅ Match input height */
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #4a90e2;
   border: none;
-  padding: 7px 12px;
-  border-radius: 0 4px 4px 0;
   color: white;
+  font-weight: 500;
+  font-size: 14px;
+  border-radius: 10px;
   cursor: pointer;
-  font-size: 1rem;
   transition: background-color 0.3s ease;
+  box-sizing: border-box;
 }
 
 .search-button:hover {
-  background-color: #003d80;
+  background-color: #357bd8;
 }
+
 
 .nav {
   display: flex;
@@ -124,4 +135,96 @@
 
 .suggestions-list li:hover {
   background-color: #f0f0f0;
+}
+/* Pill-style minimalist layout */
+.search-form.alt {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 999px;
+  padding: 5px 10px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  width: 280px;
+  position: relative;
+}
+
+.search-input.alt {
+  border: none;
+  outline: none;
+  padding: 10px 12px;
+  flex: 1;
+  font-size: 14.5px;
+  border-radius: 999px;
+  background: transparent;
+}
+
+.search-button.alt {
+  background-color: #4a90e2;
+  border: none;
+  border-radius: 999px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.search-button.alt:hover {
+  background-color: #357bd8;
+}
+
+.suggestions-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #fff;
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin-top: 4px;
+  z-index: 999;
+}
+
+.suggestions-list li {
+  padding: 10px 14px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+}
+
+.suggestions-list li:hover {
+  background-color: #f1f1f1;
+}
+
+.nav-link {
+  color: #333;
+  text-decoration: none;
+  padding: 8px 12px;
+  font-weight: 500;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+  color: #ffffff;
+}
+
+.nav-link.active {
+  color: #f8f8f8;
+  font-weight: 600;
+}
+
+.nav-link.active::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #f1f1f1;
+  border-radius: 2px;
 }

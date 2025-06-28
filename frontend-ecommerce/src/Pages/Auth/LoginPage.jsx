@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import axios from 'axios'; // ✅ plain axios without interceptors
-import { useNavigate, Link } from 'react-router-dom'; 
+import axios from 'axios';
+import { useNavigate, Link } from 'react-router-dom';
 import '../../styles/Login.css';
-import { useAuth } from '../../Context/AuthContext'; // ✅ Auth Context
+import { useAuth } from '../../Context/AuthContext';
 
 function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { login } = useAuth(); // ✅ get login from context
+  const { login } = useAuth();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -24,7 +24,7 @@ function LoginPage() {
       const { accessToken, refreshToken, role } = res.data;
 
       if (accessToken && refreshToken) {
-        login(accessToken, role, refreshToken); // ✅ Save tokens and role
+        login(accessToken, role, refreshToken);
         alert('Login successful!');
         navigate('/');
       } else {
@@ -45,31 +45,43 @@ function LoginPage() {
   };
 
   return (
-    <div className="auth-container">
-      <h2>Login</h2>
-      <form onSubmit={handleLogin}>
-        <input
-          type="email"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          placeholder="Email"
-          required
-        />
-        <input
-          type="password"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          placeholder="Password"
-          required
-        />
-        <button type="submit" disabled={loading}>
-          {loading ? 'Logging in...' : 'Login'}
-        </button>
-      </form>
+    <div className="auth-wrapper">
+      <div className="auth-box">
+        <h2 className="auth-title">Login to Your Account</h2>
+        <form onSubmit={handleLogin} className="auth-form">
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            required
+          />
+          <button type="submit" disabled={loading}>
+            {loading ? 'Logging in...' : 'Login'}
+          </button>
+        </form>
 
-      <p className="auth-switch">
-        New user? <Link to="/signup">Create an account</Link>
-      </p>
+        <div className="auth-divider">or</div>
+
+        <a href="http://localhost:8080/oauth2/authorization/google" className="google-login">
+          <img
+            src="https://developers.google.com/identity/images/g-logo.png"
+            alt="Google"
+          />
+          <span>Continue with Google</span>
+        </a>
+
+        <p className="auth-footer">
+          Don't have an account? <Link to="/signup">Sign up here</Link>
+        </p>
+      </div>
     </div>
   );
 }

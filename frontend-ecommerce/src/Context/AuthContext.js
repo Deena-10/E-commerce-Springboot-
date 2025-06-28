@@ -7,7 +7,7 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null); // ✅ Add token to context
+  const [token, setToken] = useState(null); 
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
         const isExpired = decoded.exp * 1000 < Date.now();
 
         if (!isExpired) {
-          setToken(storedToken); // ✅ Set token
+          setToken(storedToken); 
           setIsAuthenticated(true);
           setUser({ email: decoded.sub, role: decoded.role });
         } else {
@@ -40,7 +40,7 @@ export const AuthProvider = ({ children }) => {
 
     try {
       const decoded = jwtDecode(accessToken);
-      setToken(accessToken); // ✅
+      setToken(accessToken); 
       setIsAuthenticated(true);
       setUser({ email: decoded.sub, role: decoded.role });
     } catch (err) {
@@ -53,7 +53,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("refreshToken");
-    setToken(null); // ✅ clear token
+    setToken(null); 
     setIsAuthenticated(false);
     setUser(null);
   };

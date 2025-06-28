@@ -58,11 +58,14 @@ function ProductCard({ product }) {
   return (
     <>
       <div className="Card">
-        <img
-          src={product.img || 'https://via.placeholder.com/300x180?text=No+Image'}
-          alt={product.name}
-          className="ProductImage"
-        />
+        <div className="image-wrapper">
+  <img
+    src={product.img || 'https://via.placeholder.com/300x180?text=No+Image'}
+    alt={product.name}
+    className="ProductImage"
+  />
+</div>
+
         <h3 className="productname">{product.name}</h3>
         <p className="desc">{product.description}</p>
         <div className="rating">{stars}</div>

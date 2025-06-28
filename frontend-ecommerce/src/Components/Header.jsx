@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import './Header.css';
 import logo from '../img/updatedlogo.jpg';
 import { useAuth } from '../Context/AuthContext';
@@ -11,7 +11,6 @@ const Header = () => {
   const navigate = useNavigate();
   const { isAuthenticated, logout, user } = useAuth();
 
-  // Fetch search suggestions
   useEffect(() => {
     if (!searchTerm.trim()) {
       setSuggestions([]);
@@ -25,7 +24,7 @@ const Header = () => {
       } catch (err) {
         console.error('Error fetching suggestions:', err);
       }
-    }, 300); // debounce 300ms
+    }, 300);
 
     return () => clearTimeout(delayDebounce);
   }, [searchTerm]);
@@ -34,7 +33,7 @@ const Header = () => {
     e.preventDefault();
     if (searchTerm.trim()) {
       navigate(`/search?query=${encodeURIComponent(searchTerm.trim())}`);
-      setSuggestions([]); // clear suggestions
+      setSuggestions([]);
     }
   };
 
@@ -56,17 +55,24 @@ const Header = () => {
         ByteNest Gadgets
       </h1>
 
-      <form onSubmit={handleSearch} className="search-form" autoComplete="off">
+      <form onSubmit={handleSearch} className="search-form alt" autoComplete="off">
         <input
           type="text"
-          placeholder="Search products..."
+          placeholder="Search for gadgets..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="search-input"
+          className="search-input alt"
         />
-        <button type="submit" className="search-button">🔍</button>
+        <button type="submit" className="search-button alt">
+          <svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 0 24 24" width="18" fill="#fff">
+            <path d="M0 0h24v24H0z" fill="none" />
+            <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 
+              6.5 6.5 0 109.5 16c1.61 0 3.09-.59 
+              4.23-1.57l.27.28v.79l5 5L20.49 
+              19l-5-5zM10 14a4 4 0 110-8 4 4 0 010 8z" />
+          </svg>
+        </button>
 
-        {/* Suggestions Dropdown */}
         {Array.isArray(suggestions) && suggestions.length > 0 && (
           <ul className="suggestions-list">
             {suggestions.map((item, index) => (
@@ -79,24 +85,42 @@ const Header = () => {
       </form>
 
       <nav className="nav">
-        <Link to="/">Home</Link>
-        <Link to="/categories">Categories</Link>
-        <Link to="/MyOrders">My Orders</Link>
-        <Link to="/cart">Cart</Link>
+        <NavLink to="/" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+          Home
+        </NavLink>
+        <NavLink to="/categories" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+          Categories
+        </NavLink>
+        <NavLink to="/MyOrders" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+          My Orders
+        </NavLink>
+        <NavLink to="/cart" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+          Cart
+        </NavLink>
 
         {user?.role === 'ADMIN' && (
-          <Link to="/admin/orders">Admin Dashboard</Link>
+          <NavLink to="/admin/orders" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+            Admin Dashboard
+          </NavLink>
         )}
 
         {!isAuthenticated ? (
           <>
-            <Link to="/login">Login</Link>
-            <Link to="/signup">Sign Up</Link>
+            <NavLink to="/login" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+              Login
+            </NavLink>
+            <NavLink to="/signup" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+              Sign Up
+            </NavLink>
           </>
         ) : (
           <>
-            <Link to="/help">Help</Link>
-            <Link to="/profile">Profile</Link>
+            <NavLink to="/help" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+              Help
+            </NavLink>
+            <NavLink to="/profile" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+              Profile
+            </NavLink>
             <button onClick={handleLogout} className="logout-btn">Logout</button>
           </>
         )}
