@@ -16,18 +16,30 @@ function CheckoutPage() {
   const [maxStock, setMaxStock] = useState(1);
   const [notification, setNotification] = useState('');
   const [isOrderPlaced, setIsOrderPlaced] = useState(false);
+  const [userProfile, setUserProfile] = useState(null); // ✅ new
+
+  // ✅ Fetch user profile on mount
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await axiosInstance.get('/api/user/profile');
+        setUserProfile(res.data);
+      } catch (err) {
+        console.error('Failed to fetch user profile:', err);
+      }
+    };
+    fetchProfile();
+  }, []);
 
   useEffect(() => {
     const normalizeAndFetchStock = async () => {
       if (!rawProduct) return;
-
       const id = rawProduct.productId || rawProduct.id;
       const name = rawProduct.productName || rawProduct.name;
 
       try {
         const response = await fetchProductById(id);
         const stock = response.data.stock;
-
         setMaxStock(stock);
         setQuantity(rawProduct.quantity || 1);
 
@@ -64,16 +76,14 @@ function CheckoutPage() {
 
       const amount = product.price * quantity;
 
-      // Step 1: Call backend to create Razorpay order
       const res = await axiosInstance.post('/api/payment/create-order', {
         amount: Math.round(amount),
       });
 
       const { orderId } = res.data;
 
-      // Step 2: Open Razorpay modal
       const options = {
-        key: 'rzp_test_P4kKhexANqaqRH', // Replace with your Razorpay Test Key ID
+        key: 'rzp_test_P4kKhexANqaqRH',
         amount: amount * 100,
         currency: 'INR',
         name: 'TechTreasure',
@@ -81,7 +91,6 @@ function CheckoutPage() {
         image: 'https://via.placeholder.com/100x50.png?text=Logo',
         order_id: orderId,
         handler: async function (response) {
-          // Step 3: On payment success
           try {
             const orderPayload = [{ productId: product.id, quantity }];
             await placeOrder(orderPayload);
@@ -96,8 +105,9 @@ function CheckoutPage() {
           }
         },
         prefill: {
-          name: 'Your Name',
-          email: 'youremail@example.com',
+          name: userProfile?.name || '',
+          email: userProfile?.email || '',
+          contact: userProfile?.phoneNumber || '',
         },
         theme: {
           color: '#3399cc',
@@ -117,6 +127,7 @@ function CheckoutPage() {
   return (
     <div className="checkout-container">
       <h2>Checkout</h2>
+
       <div className="checkout-card">
         <img
           src={product.img || 'https://via.placeholder.com/120'}
@@ -147,6 +158,16 @@ function CheckoutPage() {
         </div>
       </div>
 
+      {userProfile && (
+        <div className="user-profile-checkout">
+          <h3>Shipping Details</h3>
+          <p><strong>Name:</strong> {userProfile.name}</p>
+          <p><strong>Email:</strong> {userProfile.email}</p>
+          <p><strong>Phone:</strong> {userProfile.phoneNumber}</p>
+          <p><strong>Address:</strong> {userProfile.address}</p>
+        </div>
+      )}
+
       <button
         className={`place-order-btn ${isOrderPlaced ? 'order-success-btn' : ''}`}
         onClick={handlePayNow}
@@ -156,9 +177,7 @@ function CheckoutPage() {
       </button>
 
       {notification && (
-        <div className="toast-notification">
-          {notification}
-        </div>
+        <div className="toast-notification">{notification}</div>
       )}
     </div>
   );

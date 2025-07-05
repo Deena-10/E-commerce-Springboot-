@@ -1,9 +1,11 @@
 package demo.webproject.service;
 
-import demo.webproject.Entity.User;
-import demo.webproject.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import demo.webproject.Entity.User;
+import demo.webproject.dto.UserProfileDTO;
+import demo.webproject.repository.UserRepository;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -37,4 +39,14 @@ public class UserServiceImpl implements UserService {
     public void save(User user) {
         userRepository.save(user);
     }
+    @Override
+    public UserProfileDTO getProfile(User user) {
+        UserProfileDTO dto = new UserProfileDTO();
+        dto.setName(user.getName());
+        dto.setEmail(user.getEmail());
+        dto.setPhoneNumber(user.getPhoneNumber());
+        dto.setAddress(user.getAddress());
+        return dto;
+    }
+
 }

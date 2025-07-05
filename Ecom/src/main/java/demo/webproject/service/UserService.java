@@ -1,6 +1,7 @@
 package demo.webproject.service;
 
 import demo.webproject.Entity.User;
+import demo.webproject.dto.UserProfileDTO;
 
 public interface UserService {
     void promoteToAdmin(Long userId);
@@ -9,4 +10,5 @@ public interface UserService {
 
     // ✅ Add this method
     User findByEmail(String email);
+    UserProfileDTO getProfile(User user);
 }
