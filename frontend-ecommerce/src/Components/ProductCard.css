@@ -47,14 +47,15 @@
 /* Product Image */
 .ProductImage {
   width: 100%;
-  height: 100%;
-  object-fit: cover;             /* Fill box, crop excess */
-  background-color: transparent; /* Remove gray background */
+  height: 180px;              /* Slightly taller for consistency */
+  object-fit: contain;
+  object-position: center;
+  background-color: white;    /* ✅ Changed from grey to white */
   border-radius: 8px;
   margin-bottom: 12px;
   display: block;
-  transition: transform 0.3s ease;
 }
+
 
 .Card:hover .ProductImage {
   transform: scale(1.05);
