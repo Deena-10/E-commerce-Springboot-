@@ -6,7 +6,7 @@ import Header from './Components/Header';
 import { ErrorBoundary } from './Components/ErrorBoundary';
 import ProductCard from './Components/ProductCard';
 import { getproducts } from './Api/ProductsApi';
-
+import ProductDetails from './Pages/ProductDetails';
 import CartPage from './Pages/CartPage';
 import CheckoutPage from './Pages/CheckoutPage';
 import Profile from './Pages/ProfilePage';
@@ -18,9 +18,11 @@ import CategoryPage from './Pages/CategoryPage';
 import CategoryProductsPage from './Pages/CategoryProductsPage';
 import AdminOrders from './Pages/AdminOrders';
 import HelpPage from './Pages/HelpPage';
-import SearchResults from './Pages/SearchResults'; // ✅ Added
+import SearchResults from './Pages/SearchResults';
+import VerifyCodePage from './Pages/Auth/VerifyCodePage'; 
+
 import OAuthCallback from './Components/OAuthCallback';
-// App.js
+
 function HomePage({ products, loading }) {
   return (
     <div className="product-grid">
@@ -36,7 +38,6 @@ function HomePage({ products, loading }) {
     </div>
   );
 }
-
 
 function App() {
   const [products, setProducts] = useState([]);
@@ -55,7 +56,8 @@ function App() {
       });
   }, []);
 
-  const hideHeaderPaths = ['/login', '/signup'];
+  // Hide header on these public pages
+  const hideHeaderPaths = ['/login', '/signup', '/verify'];
 
   return (
     <ErrorBoundary>
@@ -64,11 +66,12 @@ function App() {
         {/* Public Routes */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
+        <Route path="/verify" element={<VerifyCodePage />} />
         <Route path="/oauth2/callback" element={<OAuthCallback />} />
-
+        <Route path="/product/:id" element={<ProductDetails />} />
         <Route path="/category/:category" element={<CategoryProductsPage />} />
         <Route path="/help" element={<HelpPage />} />
-        <Route path="/search" element={<SearchResults />} /> {/* ✅ Search page */}
+        <Route path="/search" element={<SearchResults />} />
 
         {/* Protected Routes */}
         <Route
@@ -87,10 +90,7 @@ function App() {
             </PrivateRoute>
           }
         />
-        <Route
-          path="/MyOrders"
-          element={<Navigate to="/my-orders" replace />}
-        />
+        <Route path="/MyOrders" element={<Navigate to="/my-orders" replace />} />
         <Route
           path="/cart"
           element={

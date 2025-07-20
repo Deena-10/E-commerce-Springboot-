@@ -2,6 +2,8 @@ package demo.webproject.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +12,6 @@ import org.springframework.stereotype.Service;
 import demo.webproject.Entity.Product;
 import demo.webproject.repository.OrderItemRepository;
 import demo.webproject.repository.ProductRepository;
-import java.util.Objects;
-
 import jakarta.transaction.Transactional;
 
 @Service
@@ -44,6 +44,11 @@ public class ProductService {
         return combined;
     }
 
+    public Optional<Product> findById(Long id) {
+        return productRepository.findById(id);
+    }
+
+    
     
     public List<Product> getAllProducts() {
         return productRepository.findByDeletedFalse(); // ✅ Only return active products

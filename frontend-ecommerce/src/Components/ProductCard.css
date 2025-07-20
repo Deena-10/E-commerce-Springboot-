@@ -16,6 +16,11 @@
   margin-right: 8px;
 }
 
+.Card-link {
+  text-decoration: none;
+  color: inherit;
+}
+
 /* Product Card */
 .Card {
   background-color: white;

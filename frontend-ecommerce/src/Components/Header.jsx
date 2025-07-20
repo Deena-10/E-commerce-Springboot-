@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import './Header.css';
-import logo from '../img/updatedlogo.jpg';
+import logo from '../img/shp (4).png';
 import { useAuth } from '../Context/AuthContext';
 import axios from '../Api/axiosInstance';
 
@@ -9,7 +9,10 @@ const Header = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const navigate = useNavigate();
+  const location = useLocation();
   const { isAuthenticated, logout, user } = useAuth();
+
+  const hideHeaderPaths = ['/login', '/signup', '/verify'];
 
   useEffect(() => {
     if (!searchTerm.trim()) {
@@ -48,11 +51,16 @@ const Header = () => {
     navigate('/login');
   };
 
+  // Hide header for specific paths
+  if (hideHeaderPaths.includes(location.pathname)) {
+    return <></>;
+  }
+
   return (
     <header className="header">
+      {/* Logo only (text removed) */}
       <h1 className="logo">
-        <img src={logo} alt="ByteNest Gadgets Logo" className="logo-img" />
-        ByteNest Gadgets
+        <img src={logo} alt="Shoppino Logo" className="logo-img" />
       </h1>
 
       <form onSubmit={handleSearch} className="search-form alt" autoComplete="off">
@@ -85,40 +93,40 @@ const Header = () => {
       </form>
 
       <nav className="nav">
-        <NavLink to="/" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+        <NavLink to="/" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>
           Home
         </NavLink>
-        <NavLink to="/categories" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+        <NavLink to="/categories" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>
           Categories
         </NavLink>
-        <NavLink to="/MyOrders" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+        <NavLink to="/MyOrders" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>
           My Orders
         </NavLink>
-        <NavLink to="/cart" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+        <NavLink to="/cart" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>
           Cart
         </NavLink>
 
         {user?.role === 'ADMIN' && (
-          <NavLink to="/admin/orders" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+          <NavLink to="/admin/orders" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>
             Admin Dashboard
           </NavLink>
         )}
 
         {!isAuthenticated ? (
           <>
-            <NavLink to="/login" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+            <NavLink to="/login" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>
               Login
             </NavLink>
-            <NavLink to="/signup" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+            <NavLink to="/signup" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>
               Sign Up
             </NavLink>
           </>
         ) : (
           <>
-            <NavLink to="/help" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+            <NavLink to="/help" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>
               Help
             </NavLink>
-            <NavLink to="/profile" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+            <NavLink to="/profile" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>
               Profile
             </NavLink>
             <button onClick={handleLogout} className="logout-btn">Logout</button>

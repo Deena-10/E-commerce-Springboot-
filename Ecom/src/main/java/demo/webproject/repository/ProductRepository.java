@@ -1,11 +1,15 @@
 package demo.webproject.repository;
 
-import demo.webproject.Entity.Product;
-import org.springframework.data.jpa.repository.*;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import demo.webproject.Entity.Product;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
@@ -17,6 +21,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     // ✅ Filter by category (case-insensitive)
     List<Product> findByCategoryIgnoreCase(String category);
+    Optional<Product> findById(Long id);
 
     // ✅ Only return products that are NOT soft-deleted
     List<Product> findByDeletedFalse();

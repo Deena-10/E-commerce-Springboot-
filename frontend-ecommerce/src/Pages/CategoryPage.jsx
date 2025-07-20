@@ -2,12 +2,12 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/CategoriesPage.css';
 
-import mobileImg from '../img/mobile.jpg';
-import laptopImg from '../img/laptop.jpg';
+import mobileImg from '../img/mb.jpg';
+import laptopImg from '../img/lap.jpg';
 import printerImg from '../img/printer.jpg';
-import speakerImg from '../img/speaker.jpg';
-import watchImg from '../img/watch.jpg';
-import cameraImg from '../img/camera.jpg';
+import speakerImg from '../img/sp.jpg';
+import watchImg from '../img/sw.jpg';
+import cameraImg from '../img/cam.jpg';
 import desktopImg from '../img/desktop1.jpg';
 const categories = [
   { name: 'Mobile', image: mobileImg },

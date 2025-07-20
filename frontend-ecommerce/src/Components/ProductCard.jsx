@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './ProductCard.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '../Context/CartContext';
 import { fetchProductById } from '../Api/ProductsApi';
 import { getUserRole } from '../utils/getUserRole';
@@ -11,7 +11,6 @@ function ProductCard({ product }) {
   const [showMessage, setShowMessage] = useState(false);
   const [stock] = useState(product?.stock ?? 0);
 
-
   if (!product) {
     return (
       <div className="Card">
@@ -20,7 +19,8 @@ function ProductCard({ product }) {
     );
   }
 
-  const handleAddToCart = async () => {
+  const handleAddToCart = async (e) => {
+    e.stopPropagation();
     try {
       if (stock > 0) {
         await addToCart(product);
@@ -32,18 +32,21 @@ function ProductCard({ product }) {
     }
   };
 
-  const handleBuyNow = async () => {
+  const handleBuyNow = async (e) => {
+    e.stopPropagation();
     if (stock > 0) {
       const freshProduct = await fetchProductById(product.id);
       navigate('/checkout', { state: { product: freshProduct.data } });
     }
   };
 
-  const handleEdit = () => {
+  const handleEdit = (e) => {
+    e.stopPropagation();
     navigate(`/edit-product/${product.id}`);
   };
 
-  const handleDelete = () => {
+  const handleDelete = (e) => {
+    e.stopPropagation();
     if (window.confirm(`Are you sure you want to delete "${product.name}"?`)) {
       alert(`Deleted product ID: ${product.id}`);
     }
@@ -57,21 +60,20 @@ function ProductCard({ product }) {
 
   return (
     <>
-      <div className="Card">
+      <Link to={`/product/${product.id}`} className="Card" style={{ textDecoration: 'none', color: 'inherit' }}>
         <div className="image-wrapper">
-  <img
-    src={product.img || 'https://via.placeholder.com/300x180?text=No+Image'}
-    alt={product.name}
-    className="ProductImage"
-  />
-</div>
+          <img
+            src={product.img || 'https://via.placeholder.com/300x180?text=No+Image'}
+            alt={product.name}
+            className="ProductImage"
+          />
+        </div>
 
         <h3 className="productname">{product.name}</h3>
         <p className="desc">{product.description}</p>
         <div className="rating">{stars}</div>
-        <div className="price">₹{product.price.toFixed(2)}</div>
+        <div className="price">₹{product.price.toLocaleString('en-IN')}</div>
 
-        {/* ✅ Color-coded stock status */}
         <div className={`stock ${stock > 0 ? 'in-stock' : 'out-of-stock'}`}>
           {stock > 0 ? `${stock} in stock` : 'Out of stock'}
         </div>
@@ -85,14 +87,13 @@ function ProductCard({ product }) {
           </button>
         </div>
 
-        {/* 🛠 Admin-only actions */}
         {getUserRole() === 'ADMIN' && (
           <div className="admin-actions">
             <button onClick={handleEdit} className="edit-btn">Edit</button>
             <button onClick={handleDelete} className="delete-btn">Delete</button>
           </div>
         )}
-      </div>
+      </Link>
 
       {showMessage && (
         <div className="global-toast">Product added to your cart!</div>

@@ -11,11 +11,19 @@
   gap: 10px;
 }
 
+/* Logo Styling */
 .logo {
   display: flex;
   align-items: center;
-  font-size: 3rem;
-  font-weight: bold;
+  justify-content: center;
+}
+
+.logo-img {
+  height: 60px;     /* Adjust the logo height */
+  width: auto;      /* Keep the aspect ratio */
+  max-height: 70px; /* Prevent it from becoming too large */
+  object-fit: contain;
+  display: block;
 }
 
 .search-form {
@@ -62,7 +70,6 @@
   background-color: #357bd8;
 }
 
-
 .nav {
   display: flex;
   gap: 15px;
@@ -107,6 +114,7 @@
     justify-content: center;
   }
 }
+
 .search-wrapper {
   position: relative;
   width: 100%;
@@ -136,6 +144,7 @@
 .suggestions-list li:hover {
   background-color: #f0f0f0;
 }
+
 /* Pill-style minimalist layout */
 .search-form.alt {
   display: flex;
