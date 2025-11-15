@@ -1,0 +1,138 @@
+.cart-container {
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  font-family: 'Poppins', sans-serif;
+}
+
+.cart-container h2 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.cart-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.cart-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+  transition: transform 0.2s ease-in-out;
+}
+
+.cart-item:last-child {
+  border-bottom: none;
+}
+
+.cart-item:hover {
+  transform: translateY(-2px);
+  background: #fafafa;
+  border-radius: 8px;
+}
+
+.cart-item-image {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.cart-item-details {
+  flex: 1;
+}
+
+.cart-item-details strong {
+  font-size: 1.1rem;
+  color: #222;
+}
+
+.cart-item-description {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.cart-item-rating {
+  display: block;
+  margin: 0.3rem 0;
+}
+
+.star-filled {
+  color: #f39c12;
+  font-size: 1.1rem;
+}
+
+.star-empty {
+  color: #ccc;
+  font-size: 1.1rem;
+}
+
+.cart-item-stock {
+  font-size: 0.9rem;
+  color: #27ae60;
+  font-weight: 500;
+}
+
+.cart-item-price {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #e74c3c;
+  margin-top: 0.3rem;
+  display: inline-block;
+}
+
+.remove-btn,
+.buy-now-btn {
+  margin-top: 0.6rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.remove-btn {
+  background: #db1d08;
+  color: #fff;
+  margin-right: 0.5rem;
+}
+
+.remove-btn:hover {
+  background: #c0392b;
+}
+
+.buy-now-btn {
+  background: #04883b;
+  color: #fff;
+}
+
+.buy-now-btn:hover {
+  background: #1e8449;
+}
+
+.cart-total {
+  text-align: right;
+  margin-top: 1.5rem;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.empty-message {
+  text-align: center;
+  color: #555;
+  margin-top: 3rem;
+  font-size: 1.2rem;
+}
